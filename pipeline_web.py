@@ -3,12 +3,15 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import os
 import re
+import subprocess
+import sys
 import threading
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from urllib.parse import urlparse
 
 
@@ -213,9 +216,40 @@ def save_pipeline(path: Path, payload: object) -> dict[str, Any]:
     return normalized
 
 
+def resolve_open_path(root_value: object, path_value: object) -> Path:
+    root_text = _validate_text(root_value, "File root", MAX_PATH_LENGTH, required=True)
+    relative_path = _validate_relative_path(path_value)
+    if not relative_path:
+        raise PipelineValidationError("File path must not be empty.")
+    root = Path(root_text).expanduser()
+    if not root.is_absolute():
+        raise PipelineValidationError("File root must be an absolute path.")
+    resolved_root = root.resolve(strict=True)
+    target = (resolved_root / relative_path).resolve(strict=True)
+    try:
+        target.relative_to(resolved_root)
+    except ValueError as error:
+        raise PipelineValidationError("File path escapes the selected root.") from error
+    return target
+
+
+def open_local_path(path: Path) -> None:
+    if os.name == "nt":
+        os.startfile(path)  # type: ignore[attr-defined]
+        return
+    command = ["open", str(path)] if sys.platform == "darwin" else ["xdg-open", str(path)]
+    subprocess.Popen(
+        command,
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+        start_new_session=True,
+    )
+
+
 def make_handler(
     graph_path: Path,
     html_path: Path = HTML_PATH,
+    path_opener: Callable[[Path], None] = open_local_path,
 ) -> type[BaseHTTPRequestHandler]:
     write_lock = threading.Lock()
 
@@ -313,6 +347,48 @@ def make_handler(
                 return
             self._send_json(HTTPStatus.OK, normalized)
 
+        def do_POST(self) -> None:
+            request = urlparse(self.path)
+            if request.path != "/api/open-file":
+                self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found."})
+                return
+            try:
+                length = int(self.headers.get("Content-Length", "0"))
+            except ValueError:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Invalid body length."})
+                return
+            if length <= 0 or length > MAX_BODY_BYTES:
+                self._send_json(
+                    HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                    {"error": "Invalid body size."},
+                )
+                return
+            try:
+                payload = json.loads(self.rfile.read(length))
+                if not isinstance(payload, dict):
+                    raise PipelineValidationError("Open-file request must be an object.")
+                target = resolve_open_path(payload.get("root"), payload.get("path"))
+                path_opener(target)
+            except json.JSONDecodeError:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Body must be valid JSON."})
+                return
+            except PipelineValidationError as error:
+                self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(error)})
+                return
+            except FileNotFoundError:
+                self._send_json(HTTPStatus.NOT_FOUND, {"error": "File does not exist."})
+                return
+            except OSError as error:
+                self._send_json(
+                    HTTPStatus.INTERNAL_SERVER_ERROR,
+                    {"error": f"Could not open file: {error}"},
+                )
+                return
+            self._send_json(
+                HTTPStatus.OK,
+                {"status": "opened", "path": str(target)},
+            )
+
         def log_message(self, format_string: str, *args: object) -> None:
             return
 
@@ -324,10 +400,11 @@ def create_server(
     host: str = "127.0.0.1",
     port: int = 8002,
     html_path: Path = HTML_PATH,
+    path_opener: Callable[[Path], None] = open_local_path,
 ) -> ThreadingHTTPServer:
     return ThreadingHTTPServer(
         (host, port),
-        make_handler(graph_path.resolve(), html_path.resolve()),
+        make_handler(graph_path.resolve(), html_path.resolve(), path_opener),
     )
 
 

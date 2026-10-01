@@ -111,14 +111,17 @@ class PipelineServerTests(unittest.TestCase):
     def setUp(self) -> None:
         self.temporary_directory = TemporaryDirectory()
         root = Path(self.temporary_directory.name)
+        self.root = root
         self.graph_path = root / "pipeline.json"
         self.html_path = root / "b1_pipeline.html"
         pipeline_web.save_pipeline(self.graph_path, sample_pipeline())
         self.html_path.write_text("<!doctype html><title>B1 Pipeline</title>", encoding="utf-8")
+        self.opened_paths: list[Path] = []
         self.server = pipeline_web.create_server(
             self.graph_path,
             port=0,
             html_path=self.html_path,
+            path_opener=self.opened_paths.append,
         )
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -192,6 +195,36 @@ class PipelineServerTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 400)
         raised.exception.close()
         self.assertEqual(self.graph_path.read_text(encoding="utf-8"), original)
+
+    def test_post_opens_existing_file_beneath_selected_root(self) -> None:
+        target = self.root / "files" / "report.txt"
+        target.parent.mkdir()
+        target.write_text("report", encoding="utf-8")
+
+        status, response = self.request_json(
+            "/api/open-file",
+            method="POST",
+            payload={"root": str(self.root), "path": "files/report.txt"},
+        )
+
+        self.assertEqual(status, 200)
+        self.assertEqual(response["status"], "opened")
+        self.assertEqual(self.opened_paths, [target.resolve()])
+
+    def test_post_rejects_path_outside_selected_root(self) -> None:
+        request = Request(
+            self.base_url + "/api/open-file",
+            data=json.dumps({"root": str(self.root), "path": "../secret.txt"}).encode(),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+        with self.assertRaises(HTTPError) as raised:
+            urlopen(request, timeout=2)
+
+        self.assertEqual(raised.exception.code, 400)
+        raised.exception.close()
+        self.assertEqual(self.opened_paths, [])
 
 
 if __name__ == "__main__":
