@@ -1,3 +1,31 @@
 # graft's local graph cache — regenerable, not committed (run `graft build`).
 /graft/
-data
+
+# Python / test caches
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Local logs and working notes
+/logs/
+/monitoring.md
+
+# Local agent tooling and configuration
+/.claude/
+/.codex/
+/.agents/
+/.mcp.json
+/.ignore
+/AGENTS.md
+
+# Generated index — rebuild with `python3 mal_rag.py build`
+/data/
+
+# Corpus: the mal-lang repositories are cloned separately; keep only the
+# research-papers metadata and extracted text (PDFs are not redistributed).
+/sources/*
+!/sources/research-papers/
+/sources/research-papers/*
+!/sources/research-papers/catalog.json
+!/sources/research-papers/manifest.json
+!/sources/research-papers/extracted/
