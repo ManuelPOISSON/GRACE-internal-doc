@@ -1,0 +1,361 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 5690.0,
+    "height": 4470.0
+  },
+  "nodes": [
+    {
+      "id": "node-mvavtc14",
+      "kind": "file",
+      "title": "Full<br>Attack trace",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 55.0,
+      "y": 120.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvavtj9e",
+      "kind": "file",
+      "title": "Full<br>proposal",
+      "role": "File",
+      "description": "each asset/association is grounded by which attack step it is related to",
+      "path": "",
+      "x": 447.0,
+      "y": 121.0,
+      "width": 132.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 172.0
+    },
+    {
+      "id": "node-mvavu0mh",
+      "kind": "file",
+      "title": "MAL language",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 758.0,
+      "y": 86.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvaw0a61",
+      "kind": "file",
+      "title": "Attack trace<br>step 0 to N",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 291.0,
+      "y": 620.0,
+      "width": 170.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 94.0
+    },
+    {
+      "id": "node-mvaw16qa",
+      "kind": "file",
+      "title": "Model<br>from 0 to N-1",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 258.0,
+      "y": 842.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": [
+        "networkService_X",
+        "User_level1",
+        "cred_a is related to user_X"
+      ]
+    },
+    {
+      "id": "node-mvaw6je5",
+      "kind": "file",
+      "title": "MAL language",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 267.0,
+      "y": 1075.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvawd9ev",
+      "kind": "data",
+      "title": "Find assets<br> and their associations",
+      "role": "File",
+      "description": "",
+      "path": "trying2.py",
+      "x": 530.0,
+      "y": 613.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvaweg06",
+      "kind": "file",
+      "title": "Assets list",
+      "role": "File",
+      "description": "Are all classes in MAL?",
+      "path": "",
+      "x": 962.0,
+      "y": 683.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": [
+        "SSHService_X",
+        "User_lvl1",
+        "User_lvl2"
+      ]
+    },
+    {
+      "id": "node-mvawg4pq",
+      "kind": "data",
+      "title": "Are all assets  in MAL?",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1435.0,
+      "y": 775.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": [
+        "SSHService class is in MAL"
+      ]
+    },
+    {
+      "id": "node-mvawky0s",
+      "kind": "data",
+      "title": "mapping or new asset?",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1543.0,
+      "y": 957.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": [
+        "the new User_lvl1 is it the same \"real world object\" as User_level1 ?"
+      ]
+    },
+    {
+      "id": "node-mvawtmhd",
+      "kind": "file",
+      "title": "filtered proposal (steps <= N)",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 945.0,
+      "y": 257.0,
+      "width": 177.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 83.0
+    },
+    {
+      "id": "node-mvawvqrk",
+      "kind": "prompt",
+      "title": "Model steps 0 to N",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1282.0,
+      "y": 276.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvazx8az",
+      "kind": "file",
+      "title": "New associations list",
+      "role": "",
+      "description": "",
+      "path": "",
+      "x": 1077.0,
+      "y": 963.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvb01duw",
+      "kind": "data",
+      "title": "new association coherent<br>with existing model?",
+      "role": "",
+      "description": "new association\ncredA > userY\nincoherent because previous said cred_a is related to user_X\nMAL lang says 1 cred > 1 user (not 2 users)",
+      "path": "",
+      "x": 1638.0,
+      "y": 1196.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvb02bne",
+      "kind": "file",
+      "title": "Should we review all associations?",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 971.0,
+      "y": 1307.0,
+      "width": 240.0,
+      "color": "#eecdcd",
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-mvavuch9",
+      "source": "node-mvavtc14",
+      "target": "node-mvavtj9e",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvavueh1",
+      "source": "node-mvavtj9e",
+      "target": "node-mvavu0mh",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvawe9eu",
+      "source": "node-mvaw0a61",
+      "target": "node-mvawd9ev",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvawflhb",
+      "source": "node-mvawd9ev",
+      "target": "node-mvaweg06",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvawhju6",
+      "source": "node-mvaweg06",
+      "target": "node-mvawg4pq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "top"
+    },
+    {
+      "id": "edge-mvawn5u5",
+      "source": "node-mvaweg06",
+      "target": "node-mvawky0s",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "bottom",
+      "target_anchor": "top"
+    },
+    {
+      "id": "edge-mvawn8fz",
+      "source": "node-mvaw16qa",
+      "target": "node-mvawky0s",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvawufsp",
+      "source": "node-mvavtj9e",
+      "target": "node-mvawtmhd",
+      "label": "remove steps > N",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvawwosh",
+      "source": "node-mvawtmhd",
+      "target": "node-mvawvqrk",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvazy849",
+      "source": "node-mvawd9ev",
+      "target": "node-mvazx8az",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "bottom",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvb01jsi",
+      "source": "node-mvazx8az",
+      "target": "node-mvb01duw",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvkpujej",
+      "source": "node-mvaw6je5",
+      "target": "node-mvawg4pq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvkpvxxi",
+      "source": "node-mvaw16qa",
+      "target": "node-mvb01duw",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvkpxx1e",
+      "source": "node-mvaw6je5",
+      "target": "node-mvb01duw",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    }
+  ]
+}

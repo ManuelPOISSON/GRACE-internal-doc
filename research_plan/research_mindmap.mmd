@@ -1,0 +1,46 @@
+mindmap
+  root((Research plan))
+    Q1: How to improve automated pentesting?
+      Does using MAL improve automated pentesting?
+      Goal
+        MAL helps the attack agent choose which action to do next
+      Evaluation
+        Run automated pentesting in an evaluation environment
+          Without MAL
+          With MAL
+          Compare results
+        Define a good pentest
+          More vulnerabilities discovered?
+          Stealthier?
+          Faster?
+          Fewer tokens consumed?
+      Training environment choice
+        Cyber range
+        CTF events
+        Bug bounty
+    Q2: Can we automatically generate a MAL language?
+      Inputs needed to generate the language
+        What input?
+          Attack traces
+            Commands launched
+            Pentest reports
+            CTF and bug-bounty write-ups
+          Defense logs
+          Incident response reports
+        How to obtain the inputs?
+          Publicly available
+            Research datasets
+            GitHub and GitLab write-ups
+            Blog posts
+          Only accessible by us
+            Reports from Nordsnipe
+          Generate our own traces
+            How?
+              Manually
+              Using an LLM
+                Evaluation warning: never evaluate on traces used for training
+            Where? See training environment choice
+      How should a generated language be evaluated?
+        Level 1: Does it compile with correct syntax?
+        Level 2: Is it good at what it is supposed to do?
+          What is it supposed to do?

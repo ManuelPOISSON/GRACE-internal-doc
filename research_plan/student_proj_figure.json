@@ -1,0 +1,115 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 5690.0,
+    "height": 4316.0
+  },
+  "nodes": [
+    {
+      "id": "node-mvanlme3",
+      "kind": "data",
+      "title": "vulnerable<br>environment",
+      "role": "",
+      "description": "",
+      "path": "",
+      "x": 875.0,
+      "y": 3334.0,
+      "width": 163.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mvanmx1w",
+      "kind": "data",
+      "title": "attack trace",
+      "role": "",
+      "description": "real or synthetic",
+      "path": "",
+      "x": 1160.0,
+      "y": 3377.0,
+      "width": 169.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 91.0
+    },
+    {
+      "id": "node-mvann9ny",
+      "kind": "prompt",
+      "title": "<h1><br>language",
+      "role": "Final output",
+      "description": "",
+      "path": "",
+      "x": 1391.0,
+      "y": 3265.0,
+      "width": 207.0,
+      "color": "#a5d9b7",
+      "details": [],
+      "height": 223.0
+    },
+    {
+      "id": "node-mvannn2v",
+      "kind": "agent",
+      "title": "report from bug bounty, CTF, CERT",
+      "role": "input DATA (attack description)",
+      "description": "",
+      "path": "",
+      "x": 431.0,
+      "y": 3265.0,
+      "width": 240.0,
+      "color": "#e79797",
+      "details": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-mvanpm2a",
+      "source": "node-mvanmx1w",
+      "target": "node-mvann9ny",
+      "label": "",
+      "color": "#0ca74f",
+      "style": "solid",
+      "source_anchor": "top",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mvanq0f7",
+      "source": "node-mvanlme3",
+      "target": "node-mvanmx1w",
+      "label": "attack<br>execution",
+      "color": "#9028cd",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "top"
+    },
+    {
+      "id": "edge-mvanqeyg",
+      "source": "node-mvannn2v",
+      "target": "node-mvann9ny",
+      "label": "natural language processing",
+      "color": "#0075db",
+      "style": "solid",
+      "source_anchor": "top",
+      "target_anchor": "top"
+    },
+    {
+      "id": "edge-mvanrqhp",
+      "source": "node-mvannn2v",
+      "target": "node-mvanmx1w",
+      "label": "infer synthetic <br>attack trace",
+      "color": "#ce673b",
+      "style": "solid",
+      "source_anchor": "bottom",
+      "target_anchor": "bottom"
+    },
+    {
+      "id": "edge-mvanxdv0",
+      "source": "node-mvannn2v",
+      "target": "node-mvanlme3",
+      "label": "reproduce the environment described in the report",
+      "color": "#8a0ecd",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    }
+  ]
+}

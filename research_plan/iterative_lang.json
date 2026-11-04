@@ -1,0 +1,282 @@
+{
+  "version": 1,
+  "canvas": {
+    "width": 5690.0,
+    "height": 4316.0
+  },
+  "nodes": [
+    {
+      "id": "node-mw1ypqy8",
+      "kind": "file",
+      "title": "traceA",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 193.0,
+      "y": 215.0,
+      "width": 240.0,
+      "color": "#eeb5b5",
+      "details": []
+    },
+    {
+      "id": "node-mw1yq15k",
+      "kind": "file",
+      "title": "lang 0",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 200.0,
+      "y": 359.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-mw1yqhll",
+      "kind": "file",
+      "title": "lang-gen",
+      "role": "File",
+      "description": "please try to follow lang given as input",
+      "path": "",
+      "x": 506.0,
+      "y": 215.0,
+      "width": 171.0,
+      "color": "#afe4cb",
+      "details": [],
+      "height": 93.0
+    },
+    {
+      "id": "node-mw1z304s",
+      "kind": "file",
+      "title": "langage<br>proposal",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 750.0,
+      "y": 215.0,
+      "width": 105.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 101.0
+    },
+    {
+      "id": "node-mw1z3feb",
+      "kind": "file",
+      "title": "lang 1",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1070.0,
+      "y": 356.0,
+      "width": 96.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 99.0
+    },
+    {
+      "id": "node-mw1zewm2",
+      "kind": "file",
+      "title": "merge 2 languages",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 903.0,
+      "y": 215.0,
+      "width": 118.0,
+      "color": "#aee3ca",
+      "details": [],
+      "height": 112.0
+    },
+    {
+      "id": "node-mw24zta01-0",
+      "kind": "file",
+      "title": "traceB",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1112.0,
+      "y": 209.0,
+      "width": 240.0,
+      "color": "#eeb5b5",
+      "details": []
+    },
+    {
+      "id": "node-mw24zta01-2",
+      "kind": "file",
+      "title": "lang-gen",
+      "role": "File",
+      "description": "please try to follow lang given as input",
+      "path": "",
+      "x": 1425.0,
+      "y": 209.0,
+      "width": 171.0,
+      "color": "#afe4cb",
+      "details": [],
+      "height": 93.0
+    },
+    {
+      "id": "node-mw24zta01-3",
+      "kind": "file",
+      "title": "langage<br>proposal",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1669.0,
+      "y": 209.0,
+      "width": 105.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 101.0
+    },
+    {
+      "id": "node-mw24zta01-4",
+      "kind": "file",
+      "title": "lang 2",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1989.0,
+      "y": 350.0,
+      "width": 96.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 99.0
+    },
+    {
+      "id": "node-mw24zta01-5",
+      "kind": "file",
+      "title": "merge 2 languages",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1822.0,
+      "y": 209.0,
+      "width": 118.0,
+      "color": "#aee3ca",
+      "details": [],
+      "height": 112.0
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-mw1ytkol",
+      "source": "node-mw1ypqy8",
+      "target": "node-mw1yqhll",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw1ytn3d",
+      "source": "node-mw1yq15k",
+      "target": "node-mw1yqhll",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "bottom"
+    },
+    {
+      "id": "edge-mw1z3shn",
+      "source": "node-mw1yqhll",
+      "target": "node-mw1z304s",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw1zh5uc",
+      "source": "node-mw1z304s",
+      "target": "node-mw1zewm2",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw1zh8ng",
+      "source": "node-mw1zewm2",
+      "target": "node-mw1z3feb",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw1zhlna",
+      "source": "node-mw1yq15k",
+      "target": "node-mw1z3feb",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw24zta01-0",
+      "source": "node-mw24zta01-0",
+      "target": "node-mw24zta01-2",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw24zta01-2",
+      "source": "node-mw24zta01-2",
+      "target": "node-mw24zta01-3",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw24zta01-3",
+      "source": "node-mw24zta01-3",
+      "target": "node-mw24zta01-5",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw24zta01-4",
+      "source": "node-mw24zta01-5",
+      "target": "node-mw24zta01-4",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-mw2516ww",
+      "source": "node-mw1z3feb",
+      "target": "node-mw24zta01-2",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "bottom"
+    },
+    {
+      "id": "edge-mw251fk6",
+      "source": "node-mw1z3feb",
+      "target": "node-mw24zta01-4",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    }
+  ]
+}

@@ -1,0 +1,773 @@
+{
+  "version": 2,
+  "nodes": [
+    {
+      "id": "research-plan",
+      "label": "Research plan",
+      "note": "Research questions for MAL-assisted automated penetration testing.",
+      "x": 50.0,
+      "y": 1365.31,
+      "color": "#dfe7ff",
+      "bold": true
+    },
+    {
+      "id": "q1",
+      "label": "Q1: How to improve automated pentesting?",
+      "note": "Investigate whether MAL improves an automated attack agent.",
+      "x": 350.0,
+      "y": 570.0,
+      "color": "#dff7ea",
+      "bold": false
+    },
+    {
+      "id": "q1-mal",
+      "label": "Does using MAL improve automated pentesting?",
+      "note": "Primary comparison question.",
+      "x": 670.29,
+      "y": 164.83,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q1-goal",
+      "label": "Goal",
+      "note": "Define the mechanism by which MAL should help.",
+      "x": 741.71,
+      "y": 261.63,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q1-next-action",
+      "label": "MAL helps the attack agent choose which action to do next",
+      "note": "Evaluate decision quality, not only final outcomes.",
+      "x": 1686.67,
+      "y": 234.3,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q1-evaluation",
+      "label": "Evaluation",
+      "note": "Compare controlled automated pentest runs.",
+      "x": 650.0,
+      "y": 545.0,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q1-experiment",
+      "label": "Run pentesting in an evaluation environment",
+      "note": "Run a controlled comparison in one or more of the candidate environments.",
+      "x": 909.38,
+      "y": 387.6,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q1-without-mal",
+      "label": "with raw LLM, with MAL, with raw attack traces",
+      "note": "MAL is better than no data at all is \"obvious\"\nWe want MAL is better than existing solutions.",
+      "x": 1218.57,
+      "y": 578.94,
+      "color": "#8ff0a4",
+      "bold": false
+    },
+    {
+      "id": "q1-good-pentest",
+      "label": "Define a good pentest",
+      "note": "Operationalize success before running the experiment.",
+      "x": 1955.52,
+      "y": 1015.73,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q1-vulnerabilities",
+      "label": "More vulnerabilities discovered?",
+      "note": "Finding yield and coverage.",
+      "x": 2255.52,
+      "y": 865.73,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q1-stealth",
+      "label": "Stealthier?",
+      "note": "Detection and noise produced by the agent.",
+      "x": 2255.52,
+      "y": 965.73,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q1-speed",
+      "label": "Faster?",
+      "note": "Time to useful or confirmed findings.",
+      "x": 2255.52,
+      "y": 1065.73,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q1-tokens",
+      "label": "Fewer tokens consumed?",
+      "note": "Language-model resource efficiency.",
+      "x": 2255.52,
+      "y": 1165.73,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q1-training-environments",
+      "label": "Training environment choice",
+      "note": "Compare candidate environments for producing attack traces and training evidence.",
+      "x": 697.28,
+      "y": 929.85,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q1-environment-cyber-range",
+      "label": "Cyber range",
+      "note": "Controlled environment with observable ground truth.",
+      "x": 997.28,
+      "y": 829.85,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q1-environment-ctf",
+      "label": "CTF events",
+      "note": "Challenge environments with public or reproducible solutions.",
+      "x": 997.28,
+      "y": 929.85,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q1-environment-bug-bounty",
+      "label": "Bug bounty",
+      "note": "Real-world findings and write-ups, subject to authorization and disclosure constraints.",
+      "x": 997.28,
+      "y": 1029.85,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q2",
+      "label": "Q2: Can we automatically generate a MAL language?",
+      "note": "Study automatic generation and validation of MAL languages.",
+      "x": 350.0,
+      "y": 2160.62,
+      "color": "#dff7ea",
+      "bold": false
+    },
+    {
+      "id": "q2-generation-inputs",
+      "label": "Inputs needed to generate the language",
+      "note": "Define both the evidence types and how they will be acquired.",
+      "x": 650.0,
+      "y": 1801.25,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q2-input-types",
+      "label": "What input?",
+      "note": "Candidate evidence for inferring MAL assets, attack steps, defenses, and relationships.",
+      "x": 950.0,
+      "y": 1520.0,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q2-attack-traces",
+      "label": "Attack traces",
+      "note": "Observed or documented attacker activity.",
+      "x": 1250.0,
+      "y": 1370.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-commands-launched",
+      "label": "Commands launched",
+      "note": "Command-level execution traces.",
+      "x": 1550.0,
+      "y": 1270.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-pentest-reports",
+      "label": "Pentest reports",
+      "note": "Narrative findings, attack paths, and recommendations.",
+      "x": 1550.0,
+      "y": 1370.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-ctf-bugbounty-writeups",
+      "label": "CTF and bug-bounty write-ups",
+      "note": "Published attack narratives and solution paths.",
+      "x": 1550.0,
+      "y": 1470.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-defense-logs",
+      "label": "Defense logs",
+      "note": "Telemetry showing detection and defensive behavior.",
+      "x": 1250.0,
+      "y": 1570.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-incident-response-reports",
+      "label": "Incident response reports",
+      "note": "Reconstructed timelines, techniques, affected assets, and mitigations.",
+      "x": 1250.0,
+      "y": 1670.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-input-acquisition",
+      "label": "How to obtain the inputs?",
+      "note": "Candidate acquisition routes differ in realism, availability, and leakage risk.",
+      "x": 950.0,
+      "y": 2082.5,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q2-public-inputs",
+      "label": "Publicly available",
+      "note": "Sources that can support a reproducible public dataset.",
+      "x": 1250.0,
+      "y": 1870.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-research-datasets",
+      "label": "Research datasets",
+      "note": "Existing curated attack or defense datasets.",
+      "x": 1550.0,
+      "y": 1770.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-git-writeups",
+      "label": "GitHub and GitLab write-ups",
+      "note": "Repository-hosted reports, walkthroughs, and traces.",
+      "x": 1550.0,
+      "y": 1870.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-blog-posts",
+      "label": "Blog posts",
+      "note": "Public technical narratives and incident analyses.",
+      "x": 1550.0,
+      "y": 1970.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-private-inputs",
+      "label": "Only accessible by us",
+      "note": "Private evidence requires appropriate authorization and handling.",
+      "x": 1250.0,
+      "y": 2070.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-nordsnipe-reports",
+      "label": "Reports from Nordsnipe",
+      "note": "Potential private pentest-report source.",
+      "x": 1550.0,
+      "y": 2070.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-generated-traces",
+      "label": "Generate our own traces",
+      "note": "Produce controlled training evidence in the selected environments.",
+      "x": 1250.0,
+      "y": 2295.0,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "q2-generate-how",
+      "label": "How?",
+      "note": "Choose how traces are produced.",
+      "x": 1550.0,
+      "y": 2220.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-generate-manually",
+      "label": "Manually",
+      "note": "Expert-operated trace generation.",
+      "x": 1850.0,
+      "y": 2170.0,
+      "color": "#dff7ea",
+      "bold": false
+    },
+    {
+      "id": "q2-generate-llm",
+      "label": "Using an LLM",
+      "note": "Evaluation warning: never evaluate on traces used for training.",
+      "x": 1850.0,
+      "y": 2270.0,
+      "color": "#dff7ea",
+      "bold": false
+    },
+    {
+      "id": "q2-generate-where",
+      "label": "Where? See training environment choice",
+      "note": "Reuse the cyber-range, CTF, and bug-bounty environment analysis from Q1.",
+      "x": 1550.0,
+      "y": 2370.0,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "q2-evaluation",
+      "label": "How should a generated language be evaluated?",
+      "note": "Use an evaluation ladder from syntax to purpose.",
+      "x": 650.0,
+      "y": 2520.0,
+      "color": "#fff0c9",
+      "bold": false
+    },
+    {
+      "id": "q2-level-1",
+      "label": "Level 1: Does it compile with correct syntax?",
+      "note": "Minimum validity gate.",
+      "x": 950.0,
+      "y": 2470.0,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q2-level-2",
+      "label": "Level 2: Is it good at what it is supposed to do?",
+      "note": "Semantic and task-level usefulness.",
+      "x": 950.0,
+      "y": 2570.0,
+      "color": "#f1e3ff",
+      "bold": false
+    },
+    {
+      "id": "q2-purpose",
+      "label": "What is it supposed to do?",
+      "note": "Open question that must be defined before Level 2 can be measured.",
+      "x": 1245.73,
+      "y": 2565.73,
+      "color": "#dff4ff",
+      "bold": false
+    },
+    {
+      "id": "node-mugzwyz1-7win7",
+      "label": "Compare results (find metrics)",
+      "note": "",
+      "x": 1701.16,
+      "y": 690.2,
+      "color": "#dfe7ff",
+      "bold": false
+    },
+    {
+      "id": "node-mugzxswa-nb7t4",
+      "label": "Manually (human) / automated (agent pentest)",
+      "note": "something here",
+      "x": 1221.28,
+      "y": 328.43,
+      "color": "#8ff0a4",
+      "bold": false
+    },
+    {
+      "id": "node-mumapi8e-6aver",
+      "label": "MAL is better than no data at all is \"obvious\" We want MAL is better than existing solutions.",
+      "note": "",
+      "x": 1226.86,
+      "y": 446.64,
+      "color": "#8ff0a4",
+      "bold": false
+    },
+    {
+      "id": "node-mvko5i8h-wxjjz",
+      "label": "What do I know about the env (model from steps 0..N)?",
+      "note": "",
+      "x": 2069.57,
+      "y": 246.43,
+      "color": "#dff7ea",
+      "bold": false
+    },
+    {
+      "id": "node-mvkp3m0h-19u1t",
+      "label": "What actions were already executed?",
+      "note": "",
+      "x": 2037.81,
+      "y": 409.54,
+      "color": "#dff7ea",
+      "bold": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "tree-edge-1",
+      "source": "research-plan",
+      "target": "q1",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-2",
+      "source": "q1",
+      "target": "q1-mal",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-3",
+      "source": "q1",
+      "target": "q1-goal",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-4",
+      "source": "q1-goal",
+      "target": "q1-next-action",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-5",
+      "source": "q1",
+      "target": "q1-evaluation",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-6",
+      "source": "q1-evaluation",
+      "target": "q1-experiment",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-10",
+      "source": "q1-evaluation",
+      "target": "q1-good-pentest",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-11",
+      "source": "q1-good-pentest",
+      "target": "q1-vulnerabilities",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-12",
+      "source": "q1-good-pentest",
+      "target": "q1-stealth",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-13",
+      "source": "q1-good-pentest",
+      "target": "q1-speed",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-14",
+      "source": "q1-good-pentest",
+      "target": "q1-tokens",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-15",
+      "source": "q1",
+      "target": "q1-training-environments",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-16",
+      "source": "q1-training-environments",
+      "target": "q1-environment-cyber-range",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-17",
+      "source": "q1-training-environments",
+      "target": "q1-environment-ctf",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-18",
+      "source": "q1-training-environments",
+      "target": "q1-environment-bug-bounty",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-19",
+      "source": "research-plan",
+      "target": "q2",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-20",
+      "source": "q2",
+      "target": "q2-generation-inputs",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-21",
+      "source": "q2-generation-inputs",
+      "target": "q2-input-types",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-22",
+      "source": "q2-input-types",
+      "target": "q2-attack-traces",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-23",
+      "source": "q2-attack-traces",
+      "target": "q2-commands-launched",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-24",
+      "source": "q2-attack-traces",
+      "target": "q2-pentest-reports",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-25",
+      "source": "q2-attack-traces",
+      "target": "q2-ctf-bugbounty-writeups",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-26",
+      "source": "q2-input-types",
+      "target": "q2-defense-logs",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-27",
+      "source": "q2-input-types",
+      "target": "q2-incident-response-reports",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-28",
+      "source": "q2-generation-inputs",
+      "target": "q2-input-acquisition",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-29",
+      "source": "q2-input-acquisition",
+      "target": "q2-public-inputs",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-30",
+      "source": "q2-public-inputs",
+      "target": "q2-research-datasets",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-31",
+      "source": "q2-public-inputs",
+      "target": "q2-git-writeups",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-32",
+      "source": "q2-public-inputs",
+      "target": "q2-blog-posts",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-33",
+      "source": "q2-input-acquisition",
+      "target": "q2-private-inputs",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-34",
+      "source": "q2-private-inputs",
+      "target": "q2-nordsnipe-reports",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-35",
+      "source": "q2-input-acquisition",
+      "target": "q2-generated-traces",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-36",
+      "source": "q2-generated-traces",
+      "target": "q2-generate-how",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-37",
+      "source": "q2-generate-how",
+      "target": "q2-generate-manually",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-38",
+      "source": "q2-generate-how",
+      "target": "q2-generate-llm",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-39",
+      "source": "q2-generated-traces",
+      "target": "q2-generate-where",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-40",
+      "source": "q2",
+      "target": "q2-evaluation",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-41",
+      "source": "q2-evaluation",
+      "target": "q2-level-1",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-42",
+      "source": "q2-evaluation",
+      "target": "q2-level-2",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "tree-edge-43",
+      "source": "q2-level-2",
+      "target": "q2-purpose",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mugzvson-quv67",
+      "source": "q2-purpose",
+      "target": "q1-next-action",
+      "kind": "relation",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mugzx8z2-0vic5",
+      "source": "q1-without-mal",
+      "target": "node-mugzwyz1-7win7",
+      "kind": "relation",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-muh00tmc-z4w5u",
+      "source": "q1-experiment",
+      "target": "node-mugzxswa-nb7t4",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-muh00vzo-7ixox",
+      "source": "node-mugzxswa-nb7t4",
+      "target": "node-mugzwyz1-7win7",
+      "kind": "relation",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-muh01av5-4a8bo",
+      "source": "node-mugzwyz1-7win7",
+      "target": "q1-good-pentest",
+      "kind": "relation",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mumaqh4f-xl6lu",
+      "source": "q1-experiment",
+      "target": "node-mumapi8e-6aver",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mumaqu0g-xfzlc",
+      "source": "node-mumapi8e-6aver",
+      "target": "q1-without-mal",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mvko5i8h-6ob0b",
+      "source": "q1-next-action",
+      "target": "node-mvko5i8h-wxjjz",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    },
+    {
+      "id": "edge-mvkp3m0h-5kjev",
+      "source": "q1-next-action",
+      "target": "node-mvkp3m0h-19u1t",
+      "kind": "hierarchy",
+      "color": "#64748b"
+    }
+  ]
+}

@@ -1,8 +1,8 @@
 {
   "version": 1,
   "canvas": {
-    "width": 1490,
-    "height": 2270
+    "width": 5690.0,
+    "height": 4470.0
   },
   "nodes": [
     {
@@ -12,9 +12,9 @@
       "role": "Input file A1",
       "description": "",
       "path": "dataset/guided/layerB/flag155d78.json",
-      "x": 30,
-      "y": 65,
-      "width": 250,
+      "x": 0.0,
+      "y": 70.0,
+      "width": 250.0,
       "color": "#edf0f2",
       "details": []
     },
@@ -25,11 +25,13 @@
       "role": "Deterministic",
       "description": "Normalizes the raw attack trace into an ordered sequence of attack steps.",
       "path": "",
-      "x": 730,
-      "y": 50,
-      "width": 230,
+      "x": 363.0,
+      "y": 59.0,
+      "width": 230.0,
       "color": "#edf0f2",
-      "details": ["Raw attack trace"]
+      "details": [
+        "Raw attack trace"
+      ]
     },
     {
       "id": "normalized-trace",
@@ -37,12 +39,15 @@
       "title": "Normalized Attack Trace",
       "role": "Output A1",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A1_steps.json",
-      "x": 1150,
-      "y": 35,
-      "width": 300,
-      "color": "#ffffff",
-      "details": ["Ordered attack steps", "Input data for A2 and A3"]
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A1_steps.json",
+      "x": 667.0,
+      "y": 305.0,
+      "width": 300.0,
+      "color": "#efdada",
+      "details": [
+        "Ordered attack steps",
+        "Input data for A2 and A3"
+      ]
     },
     {
       "id": "skill-a2",
@@ -50,10 +55,10 @@
       "title": "mal-action-effect",
       "role": "Skill A2",
       "description": "",
-      "path": "skills/mal-action-effect/SKILL.md",
-      "x": 330,
-      "y": 330,
-      "width": 270,
+      "path": "GRACE/agentic-pipeline/src/grace_agentic/skills/v0/skills/mal-action-effect/SKILL.md",
+      "x": 253.0,
+      "y": 588.0,
+      "width": 270.0,
       "color": "#ffffff",
       "details": []
     },
@@ -64,9 +69,9 @@
       "role": "System prompt",
       "description": "",
       "path": "",
-      "x": 390,
-      "y": 485,
-      "width": 150,
+      "x": 363.0,
+      "y": 736.0,
+      "width": 150.0,
       "color": "#f4fbfa",
       "details": []
     },
@@ -77,11 +82,13 @@
       "role": "Agent",
       "description": "Describes actions and their MAL effects.",
       "path": "",
-      "x": 730,
-      "y": 350,
-      "width": 230,
+      "x": 1194.0,
+      "y": 313.0,
+      "width": 230.0,
       "color": "#e4f5f2",
-      "details": ["A1_steps.json + mal-action-effect"]
+      "details": [
+        "A1_steps.json + mal-action-effect"
+      ]
     },
     {
       "id": "output-a2",
@@ -89,12 +96,16 @@
       "title": "Details of each attack step",
       "role": "Output A2",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A2_actions_effects.json",
-      "x": 1150,
-      "y": 335,
-      "width": 300,
-      "color": "#ffffff",
-      "details": ["Name of the action", "Requires effects", "Produced effects"]
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A2_actions_effects.json",
+      "x": 1525.0,
+      "y": 305.0,
+      "width": 300.0,
+      "color": "#f0dbdb",
+      "details": [
+        "Name of the action",
+        "Requires effects",
+        "Produced effects"
+      ]
     },
     {
       "id": "skill-a3",
@@ -102,10 +113,10 @@
       "title": "mal-asset-association",
       "role": "Skill A3",
       "description": "",
-      "path": "skills/mal-asset-association/SKILL.md",
-      "x": 330,
-      "y": 650,
-      "width": 270,
+      "path": "GRACE/agentic-pipeline/src/grace_agentic/skills/v0/skills/mal-asset-association/SKILL.md",
+      "x": 283.0,
+      "y": 847.0,
+      "width": 270.0,
       "color": "#ffffff",
       "details": []
     },
@@ -116,9 +127,9 @@
       "role": "System prompt",
       "description": "",
       "path": "",
-      "x": 390,
-      "y": 805,
-      "width": 150,
+      "x": 362.0,
+      "y": 990.0,
+      "width": 150.0,
       "color": "#f4fbfa",
       "details": []
     },
@@ -129,11 +140,13 @@
       "role": "Agent",
       "description": "Instantiates assets and their associations.",
       "path": "",
-      "x": 730,
-      "y": 685,
-      "width": 230,
+      "x": 1193.0,
+      "y": 633.0,
+      "width": 230.0,
       "color": "#e4f5f2",
-      "details": ["A1_steps.json + mal-asset-association"]
+      "details": [
+        "A1_steps.json + mal-asset-association"
+      ]
     },
     {
       "id": "output-a3",
@@ -141,12 +154,16 @@
       "title": "Assets list + associations list",
       "role": "Output A3",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A3_assets.json",
-      "x": 1150,
-      "y": 675,
-      "width": 300,
-      "color": "#ffffff",
-      "details": ["Instantiated assets", "Associations between assets", "Attack-step evidence"]
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A3_assets.json",
+      "x": 1494.0,
+      "y": 627.0,
+      "width": 300.0,
+      "color": "#efdada",
+      "details": [
+        "Instantiated assets",
+        "Associations between assets",
+        "Attack-step evidence"
+      ]
     },
     {
       "id": "existing-classes",
@@ -155,11 +172,13 @@
       "role": "Data A4",
       "description": "",
       "path": "",
-      "x": 30,
-      "y": 950,
-      "width": 250,
+      "x": 27.0,
+      "y": 1051.0,
+      "width": 250.0,
       "color": "#edf4ff",
-      "details": ["ehLang class definitions"]
+      "details": [
+        "ehLang class definitions"
+      ]
     },
     {
       "id": "skill-a4",
@@ -167,10 +186,10 @@
       "title": "mal-class-abstraction",
       "role": "Skill A4",
       "description": "",
-      "path": "skills/mal-class-abstraction/SKILL.md",
-      "x": 330,
-      "y": 1130,
-      "width": 270,
+      "path": "GRACE/agentic-pipeline/grace_agentic/skills/v0/skills/mal-class-abstraction/SKILL.md",
+      "x": 405.0,
+      "y": 1144.0,
+      "width": 270.0,
       "color": "#ffffff",
       "details": []
     },
@@ -181,9 +200,9 @@
       "role": "System prompt",
       "description": "",
       "path": "",
-      "x": 390,
-      "y": 1285,
-      "width": 150,
+      "x": 426.0,
+      "y": 1286.0,
+      "width": 150.0,
       "color": "#f4fbfa",
       "details": []
     },
@@ -194,11 +213,13 @@
       "role": "Agent",
       "description": "Maps each instantiated asset to a class.",
       "path": "",
-      "x": 730,
-      "y": 1150,
-      "width": 230,
+      "x": 1919.0,
+      "y": 692.0,
+      "width": 230.0,
       "color": "#e4f5f2",
-      "details": ["A3_assets.json + existing classes + skill"]
+      "details": [
+        "A3_assets.json + existing classes + skill"
+      ]
     },
     {
       "id": "output-a4",
@@ -206,12 +227,15 @@
       "title": "Instantiated assets to classes",
       "role": "Output A4",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A4_classes.json",
-      "x": 1150,
-      "y": 1130,
-      "width": 300,
-      "color": "#ffffff",
-      "details": ["Asset-to-class mapping", "Existing or new classes"]
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A4_classes.json",
+      "x": 2236.0,
+      "y": 656.0,
+      "width": 300.0,
+      "color": "#eed9d9",
+      "details": [
+        "Asset-to-class mapping",
+        "Existing or new classes"
+      ]
     },
     {
       "id": "skill-a5",
@@ -219,10 +243,10 @@
       "title": "mal-attack-step-synthesis",
       "role": "Skill A5",
       "description": "",
-      "path": "skills/mal-attack-step-synthesis/SKILL.md",
-      "x": 330,
-      "y": 1500,
-      "width": 270,
+      "path": "GRACE/agentic-pipeline/grace_agentic/skills/v0/skills/mal-attack-step-synthesis/SKILL.md",
+      "x": 330.0,
+      "y": 1500.0,
+      "width": 270.0,
       "color": "#ffffff",
       "details": []
     },
@@ -233,9 +257,9 @@
       "role": "System prompt",
       "description": "",
       "path": "",
-      "x": 390,
-      "y": 1655,
-      "width": 150,
+      "x": 390.0,
+      "y": 1655.0,
+      "width": 150.0,
       "color": "#f4fbfa",
       "details": []
     },
@@ -246,11 +270,13 @@
       "role": "Agent",
       "description": "Maps classes to actions and applies their logic.",
       "path": "",
-      "x": 730,
-      "y": 1520,
-      "width": 230,
+      "x": 2626.0,
+      "y": 379.0,
+      "width": 230.0,
       "color": "#e4f5f2",
-      "details": ["A2_actions_effects.json + A4_classes.json + skill"]
+      "details": [
+        "A2_actions_effects.json + A4_classes.json + skill"
+      ]
     },
     {
       "id": "output-a5",
@@ -258,12 +284,16 @@
       "title": "Mapping class to actions",
       "role": "Output A5",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A5_steps.json",
-      "x": 1150,
-      "y": 1500,
-      "width": 300,
-      "color": "#ffffff",
-      "details": ["Required effects", "Produced effects", "AND / OR logic"]
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A5_steps.json",
+      "x": 2928.0,
+      "y": 501.0,
+      "width": 300.0,
+      "color": "#edd8d8",
+      "details": [
+        "Required effects",
+        "Produced effects",
+        "AND / OR logic"
+      ]
     },
     {
       "id": "existing-defenses",
@@ -272,11 +302,13 @@
       "role": "Data A6",
       "description": "",
       "path": "",
-      "x": 30,
-      "y": 1740,
-      "width": 250,
+      "x": 30.0,
+      "y": 1740.0,
+      "width": 250.0,
       "color": "#edf4ff",
-      "details": ["ehLang defense definitions"]
+      "details": [
+        "ehLang defense definitions"
+      ]
     },
     {
       "id": "skill-a6",
@@ -284,10 +316,10 @@
       "title": "mal-defense-inference",
       "role": "Skill A6",
       "description": "",
-      "path": "skills/mal-defense-inference/SKILL.md",
-      "x": 330,
-      "y": 1880,
-      "width": 270,
+      "path": "GRACE/agentic-pipeline/grace_agentic/skills/v0/skills/mal-defense-inference/SKILL.md",
+      "x": 330.0,
+      "y": 1880.0,
+      "width": 270.0,
       "color": "#ffffff",
       "details": []
     },
@@ -298,9 +330,9 @@
       "role": "System prompt",
       "description": "",
       "path": "",
-      "x": 390,
-      "y": 2035,
-      "width": 150,
+      "x": 390.0,
+      "y": 2035.0,
+      "width": 150.0,
       "color": "#f4fbfa",
       "details": []
     },
@@ -311,11 +343,13 @@
       "role": "Agent",
       "description": "Infers defenses and their connected classes.",
       "path": "",
-      "x": 730,
-      "y": 1900,
-      "width": 230,
+      "x": 3322.0,
+      "y": 638.0,
+      "width": 230.0,
       "color": "#e4f5f2",
-      "details": ["A5_steps.json + A4_classes.json + existing defenses + skill"]
+      "details": [
+        "A5_steps.json + A4_classes.json + existing defenses + skill"
+      ]
     },
     {
       "id": "output-a6",
@@ -323,40 +357,484 @@
       "title": "Defense definitions",
       "role": "Output A6 - to confirm",
       "description": "",
-      "path": "pipeline/b1_out/flag155d78/A6_defenses.json",
-      "x": 1150,
-      "y": 1880,
-      "width": 300,
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/A6_defenses.json",
+      "x": 3646.0,
+      "y": 621.0,
+      "width": 300.0,
+      "color": "#ecd7d7",
+      "details": [
+        "Defense name",
+        "Left class",
+        "Right class"
+      ]
+    },
+    {
+      "id": "node-muxt3hqp",
+      "kind": "file",
+      "title": "Proposal",
+      "role": "File",
+      "description": "classes, attack steps and defenses derived from attack trace",
+      "path": "GRACE-artifacts/lang_gen/run_261027_14h36_flagadcb1f/proposal.json",
+      "x": 227.0,
+      "y": 2162.0,
+      "width": 240.0,
+      "color": "#ebd6d6",
+      "details": [
+        "with label if they are new or reused from ehLang",
+        "this contains the lang as it should be if there were only this trace"
+      ]
+    },
+    {
+      "id": "node-muxuouv3",
+      "kind": "deterministic",
+      "title": "Gate",
+      "role": "",
+      "description": "Grounding gate",
+      "path": "",
+      "x": 643.0,
+      "y": 2163.0,
+      "width": 240.0,
+      "color": "#edf0f2",
+      "details": [
+        "verify citations of step_id in proposal exist in trace"
+      ]
+    },
+    {
+      "id": "node-muzfucjq",
+      "kind": "agent",
+      "title": "B2 reconcile",
+      "role": "AGENT",
+      "description": "",
+      "path": "",
+      "x": 952.0,
+      "y": 2496.0,
+      "width": 240.0,
+      "color": "#dff7ea",
+      "details": []
+    },
+    {
+      "id": "node-muzfzmke",
+      "kind": "data",
+      "title": "Existing mal langugage full",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 63.0,
+      "y": 2445.0,
+      "width": 240.0,
+      "color": "#dff4ff",
+      "details": []
+    },
+    {
+      "id": "node-muzg5j4k",
+      "kind": "file",
+      "title": "mal-reconciliation",
+      "role": "SKILL-B2",
+      "description": "",
+      "path": "GRACE/agentic-pipeline/src/grace_agentic/skills/v0/skills/mal-reconciliation/SKILL.md",
+      "x": 312.0,
+      "y": 2655.0,
+      "width": 240.0,
       "color": "#ffffff",
-      "details": ["Defense name", "Left class", "Right class"]
+      "details": []
+    },
+    {
+      "id": "node-muzg9j0l",
+      "kind": "prompt",
+      "title": "B2_SYS",
+      "role": "System prompt",
+      "description": "",
+      "path": "",
+      "x": 309.0,
+      "y": 2825.0,
+      "width": 240.0,
+      "color": "#ffffff",
+      "details": []
+    },
+    {
+      "id": "node-muzhfshm",
+      "kind": "file",
+      "title": "diff: how the lang should be extended",
+      "role": "File",
+      "description": "",
+      "path": "langs/ehlang/work/flag155d78/diff.json",
+      "x": 1268.0,
+      "y": 2504.0,
+      "width": 254.0,
+      "color": "#ffffff",
+      "details": [],
+      "height": 161.0
+    },
+    {
+      "id": "node-muzi0era",
+      "kind": "file",
+      "title": "langedit",
+      "role": "File",
+      "description": "",
+      "path": "",
+      "x": 1715.0,
+      "y": 2381.0,
+      "width": 240.0,
+      "color": "#def4ff",
+      "details": [
+        "write the new steps/defense in existing mal",
+        "write new classes in existing mal",
+        "save bakup of current mal",
+        "check new mal compile",
+        "check new mal can still represent flag 155d78"
+      ]
     }
   ],
   "edges": [
-    {"id": "raw-a1", "source": "raw-trace", "target": "a1", "label": "raw input", "color": "#91a0ad", "style": "solid"},
-    {"id": "a1-normalized", "source": "a1", "target": "normalized-trace", "label": "output A1", "color": "#91a0ad", "style": "solid"},
-    {"id": "normalized-a2", "source": "normalized-trace", "target": "a2", "label": "input A2", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "normalized-a3", "source": "normalized-trace", "target": "a3", "label": "input A3", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "skill-a2-a2", "source": "skill-a2", "target": "a2", "label": "skill A2", "color": "#91a0ad", "style": "solid"},
-    {"id": "prompt-a2-a2", "source": "prompt-a2", "target": "a2", "label": "", "color": "#91a0ad", "style": "solid"},
-    {"id": "a2-output-a2", "source": "a2", "target": "output-a2", "label": "output A2", "color": "#91a0ad", "style": "solid"},
-    {"id": "skill-a3-a3", "source": "skill-a3", "target": "a3", "label": "skill A3", "color": "#91a0ad", "style": "solid"},
-    {"id": "prompt-a3-a3", "source": "prompt-a3", "target": "a3", "label": "", "color": "#91a0ad", "style": "solid"},
-    {"id": "a3-output-a3", "source": "a3", "target": "output-a3", "label": "output A3", "color": "#91a0ad", "style": "solid"},
-    {"id": "existing-classes-a4", "source": "existing-classes", "target": "a4", "label": "existing classes", "color": "#91a0ad", "style": "solid"},
-    {"id": "skill-a4-a4", "source": "skill-a4", "target": "a4", "label": "skill A4", "color": "#91a0ad", "style": "solid"},
-    {"id": "prompt-a4-a4", "source": "prompt-a4", "target": "a4", "label": "", "color": "#91a0ad", "style": "solid"},
-    {"id": "output-a3-a4", "source": "output-a3", "target": "a4", "label": "A3 assets", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "a4-output-a4", "source": "a4", "target": "output-a4", "label": "output A4", "color": "#91a0ad", "style": "solid"},
-    {"id": "skill-a5-a5", "source": "skill-a5", "target": "a5", "label": "skill A5", "color": "#91a0ad", "style": "solid"},
-    {"id": "prompt-a5-a5", "source": "prompt-a5", "target": "a5", "label": "", "color": "#91a0ad", "style": "solid"},
-    {"id": "output-a2-a5", "source": "output-a2", "target": "a5", "label": "A2 actions", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "output-a4-a5", "source": "output-a4", "target": "a5", "label": "A4 classes", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "a5-output-a5", "source": "a5", "target": "output-a5", "label": "output A5", "color": "#91a0ad", "style": "solid"},
-    {"id": "existing-defenses-a6", "source": "existing-defenses", "target": "a6", "label": "existing defenses", "color": "#91a0ad", "style": "solid"},
-    {"id": "skill-a6-a6", "source": "skill-a6", "target": "a6", "label": "skill A6", "color": "#91a0ad", "style": "solid"},
-    {"id": "prompt-a6-a6", "source": "prompt-a6", "target": "a6", "label": "", "color": "#91a0ad", "style": "solid"},
-    {"id": "output-a5-a6", "source": "output-a5", "target": "a6", "label": "A5 steps", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "output-a4-a6", "source": "output-a4", "target": "a6", "label": "A4 classes", "color": "#5f7d7a", "style": "dashed"},
-    {"id": "a6-output-a6", "source": "a6", "target": "output-a6", "label": "output A6", "color": "#91a0ad", "style": "solid"}
+    {
+      "id": "raw-a1",
+      "source": "raw-trace",
+      "target": "a1",
+      "label": "raw input",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a1-normalized",
+      "source": "a1",
+      "target": "normalized-trace",
+      "label": "output A1",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "normalized-a2",
+      "source": "normalized-trace",
+      "target": "a2",
+      "label": "input A2",
+      "color": "#5f7d7a",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "normalized-a3",
+      "source": "normalized-trace",
+      "target": "a3",
+      "label": "input A3",
+      "color": "#5f7d7a",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "skill-a2-a2",
+      "source": "skill-a2",
+      "target": "a2",
+      "label": "skill A2",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "prompt-a2-a2",
+      "source": "prompt-a2",
+      "target": "a2",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a2-output-a2",
+      "source": "a2",
+      "target": "output-a2",
+      "label": "output A2",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "skill-a3-a3",
+      "source": "skill-a3",
+      "target": "a3",
+      "label": "skill A3",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "prompt-a3-a3",
+      "source": "prompt-a3",
+      "target": "a3",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a3-output-a3",
+      "source": "a3",
+      "target": "output-a3",
+      "label": "output A3",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "existing-classes-a4",
+      "source": "existing-classes",
+      "target": "a4",
+      "label": "existing classes",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "skill-a4-a4",
+      "source": "skill-a4",
+      "target": "a4",
+      "label": "skill A4",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "prompt-a4-a4",
+      "source": "prompt-a4",
+      "target": "a4",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "output-a3-a4",
+      "source": "output-a3",
+      "target": "a4",
+      "label": "A3 assets",
+      "color": "#5f7d7a",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a4-output-a4",
+      "source": "a4",
+      "target": "output-a4",
+      "label": "output A4",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "skill-a5-a5",
+      "source": "skill-a5",
+      "target": "a5",
+      "label": "skill A5",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "prompt-a5-a5",
+      "source": "prompt-a5",
+      "target": "a5",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "output-a2-a5",
+      "source": "output-a2",
+      "target": "a5",
+      "label": "A2 actions",
+      "color": "#5f7d7a",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "output-a4-a5",
+      "source": "output-a4",
+      "target": "a5",
+      "label": "A4 classes",
+      "color": "#5f7d7a",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a5-output-a5",
+      "source": "a5",
+      "target": "output-a5",
+      "label": "output A5",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "existing-defenses-a6",
+      "source": "existing-defenses",
+      "target": "a6",
+      "label": "existing defenses",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "skill-a6-a6",
+      "source": "skill-a6",
+      "target": "a6",
+      "label": "skill A6",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "prompt-a6-a6",
+      "source": "prompt-a6",
+      "target": "a6",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "output-a5-a6",
+      "source": "output-a5",
+      "target": "a6",
+      "label": "A5 steps",
+      "color": "#5f7d7a",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "output-a4-a6",
+      "source": "output-a4",
+      "target": "a6",
+      "label": "A4 classes",
+      "color": "#5f7d7a",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "a6-output-a6",
+      "source": "a6",
+      "target": "output-a6",
+      "label": "output A6",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muxw3g00",
+      "source": "node-muxt3hqp",
+      "target": "node-muxuouv3",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzfv9pa",
+      "source": "node-muxt3hqp",
+      "target": "node-muzfucjq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzg8t6j",
+      "source": "node-muzfzmke",
+      "target": "node-muzfucjq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzg8z9x",
+      "source": "node-muzg5j4k",
+      "target": "node-muzfucjq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzhxese",
+      "source": "node-muzg9j0l",
+      "target": "node-muzfucjq",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzhxzns",
+      "source": "node-muzfucjq",
+      "target": "node-muzhfshm",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "dashed",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzilflr",
+      "source": "node-muzhfshm",
+      "target": "node-muzi0era",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzim3wv",
+      "source": "node-muxt3hqp",
+      "target": "node-muzi0era",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    },
+    {
+      "id": "edge-muzim9y0",
+      "source": "node-muzfzmke",
+      "target": "node-muzi0era",
+      "label": "",
+      "color": "#91a0ad",
+      "style": "solid",
+      "source_anchor": "middle",
+      "target_anchor": "middle"
+    }
   ]
 }

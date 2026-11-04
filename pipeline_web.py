@@ -5,6 +5,8 @@ import json
 import math
 import os
 import re
+import secrets
+import shutil
 import subprocess
 import sys
 import threading
@@ -30,6 +32,7 @@ COLOR_PATTERN = re.compile(r"^#[0-9A-Fa-f]{6}$")
 WINDOWS_DRIVE_PATTERN = re.compile(r"^[A-Za-z]:")
 NODE_KINDS = {"agent", "data", "deterministic", "file", "prompt"}
 EDGE_STYLES = {"solid", "dashed"}
+EDGE_ANCHORS = {"top", "middle", "bottom"}
 DEFAULT_NODE_COLOR = "#ffffff"
 DEFAULT_EDGE_COLOR = "#91a0ad"
 
@@ -164,6 +167,10 @@ def validate_pipeline(payload: object) -> dict[str, Any]:
                 "details": details,
             }
         )
+        if "height" in raw:
+            nodes[-1]["height"] = _validate_number(
+                raw["height"], f"Node {node_id} height", minimum=68, maximum=1_000
+            )
         node_ids.add(node_id)
 
     edge_ids: set[str] = set()
@@ -183,6 +190,12 @@ def validate_pipeline(payload: object) -> dict[str, Any]:
         style = raw.get("style", "solid")
         if style not in EDGE_STYLES:
             raise PipelineValidationError(f"Edge {edge_id} has an invalid style.")
+        source_anchor = raw.get("source_anchor", raw.get("sourceAnchor", "middle"))
+        target_anchor = raw.get("target_anchor", raw.get("targetAnchor", "middle"))
+        if source_anchor not in EDGE_ANCHORS:
+            raise PipelineValidationError(f"Edge {edge_id} has an invalid source anchor.")
+        if target_anchor not in EDGE_ANCHORS:
+            raise PipelineValidationError(f"Edge {edge_id} has an invalid target anchor.")
         edges.append(
             {
                 "id": edge_id,
@@ -193,6 +206,8 @@ def validate_pipeline(payload: object) -> dict[str, Any]:
                     raw.get("color", DEFAULT_EDGE_COLOR), "Edge color"
                 ),
                 "style": style,
+                "source_anchor": source_anchor,
+                "target_anchor": target_anchor,
             }
         )
         edge_ids.add(edge_id)
@@ -205,6 +220,29 @@ def load_pipeline(path: Path) -> dict[str, Any]:
 
 
 def save_pipeline(path: Path, payload: object) -> dict[str, Any]:
+    if isinstance(payload, dict) and path.exists():
+        existing = load_pipeline(path)
+        existing_nodes = {node["id"]: node for node in existing["nodes"]}
+        existing_edges = {edge["id"]: edge for edge in existing["edges"]}
+        raw_nodes = payload.get("nodes")
+        raw_edges = payload.get("edges")
+        if isinstance(raw_nodes, list):
+            for raw_node in raw_nodes:
+                if not isinstance(raw_node, dict):
+                    continue
+                previous = existing_nodes.get(raw_node.get("id"))
+                if previous is not None:
+                    raw_node.setdefault("width", previous["width"])
+                    if "height" in previous:
+                        raw_node.setdefault("height", previous["height"])
+        if isinstance(raw_edges, list):
+            for raw_edge in raw_edges:
+                if not isinstance(raw_edge, dict):
+                    continue
+                previous = existing_edges.get(raw_edge.get("id"))
+                if previous is not None:
+                    raw_edge.setdefault("source_anchor", previous["source_anchor"])
+                    raw_edge.setdefault("target_anchor", previous["target_anchor"])
     normalized = validate_pipeline(payload)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = path.with_suffix(path.suffix + ".tmp")
@@ -246,12 +284,41 @@ def open_local_path(path: Path) -> None:
     )
 
 
+def choose_pipeline_file() -> Path | None:
+    """Ask the local desktop user to choose an existing pipeline JSON file."""
+    if shutil.which("zenity"):
+        result = subprocess.run(
+            ["zenity", "--file-selection", "--title=Open pipeline JSON", "--file-filter=*.json"],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0:
+            return None
+        return Path(result.stdout.strip())
+
+    from tkinter import Tk, filedialog
+
+    root = Tk()
+    root.withdraw()
+    try:
+        selected = filedialog.askopenfilename(
+            title="Open pipeline JSON",
+            filetypes=[("JSON files", "*.json")],
+        )
+    finally:
+        root.destroy()
+    return Path(selected) if selected else None
+
+
 def make_handler(
     graph_path: Path,
     html_path: Path = HTML_PATH,
     path_opener: Callable[[Path], None] = open_local_path,
+    graph_picker: Callable[[], Path | None] = choose_pipeline_file,
 ) -> type[BaseHTTPRequestHandler]:
     write_lock = threading.Lock()
+    selected_graphs: dict[str, Path] = {}
 
     class PipelineHandler(BaseHTTPRequestHandler):
         def _send_bytes(
@@ -312,7 +379,7 @@ def make_handler(
 
         def do_PUT(self) -> None:
             request = urlparse(self.path)
-            if request.path != "/api/pipeline":
+            if request.path not in {"/api/pipeline", "/api/selected-pipeline"}:
                 self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found."})
                 return
             try:
@@ -329,7 +396,16 @@ def make_handler(
             try:
                 payload = json.loads(self.rfile.read(length))
                 with write_lock:
-                    normalized = save_pipeline(graph_path, payload)
+                    if request.path == "/api/selected-pipeline":
+                        if not isinstance(payload, dict):
+                            raise PipelineValidationError("Selected pipeline request must be an object.")
+                        token = payload.get("token")
+                        target = selected_graphs.get(token) if isinstance(token, str) else None
+                        if target is None:
+                            raise PipelineValidationError("Choose a pipeline JSON file before saving.")
+                        normalized = save_pipeline(target, payload.get("graph"))
+                    else:
+                        normalized = save_pipeline(graph_path, payload)
             except json.JSONDecodeError:
                 self._send_json(
                     HTTPStatus.BAD_REQUEST,
@@ -349,6 +425,50 @@ def make_handler(
 
         def do_POST(self) -> None:
             request = urlparse(self.path)
+            if request.path == "/api/browse-pipeline":
+                try:
+                    chosen = graph_picker()
+                    if chosen is None:
+                        self._send_json(HTTPStatus.OK, {"cancelled": True})
+                        return
+                    chosen = chosen.resolve(strict=True)
+                    if chosen.suffix.lower() != ".json" or not chosen.is_file():
+                        raise PipelineValidationError("Choose an existing JSON file.")
+                    graph = load_pipeline(chosen)
+                    token = secrets.token_urlsafe(24)
+                    with write_lock:
+                        selected_graphs[token] = chosen
+                except (json.JSONDecodeError, PipelineValidationError) as error:
+                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(error)})
+                    return
+                except OSError as error:
+                    self._send_json(HTTPStatus.INTERNAL_SERVER_ERROR, {"error": f"Could not open pipeline: {error}"})
+                    return
+                self._send_json(HTTPStatus.OK, {"name": chosen.name, "token": token, "graph": graph})
+                return
+            if request.path == "/api/validate-pipeline":
+                try:
+                    length = int(self.headers.get("Content-Length", "0"))
+                except ValueError:
+                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Invalid body length."})
+                    return
+                if length <= 0 or length > MAX_BODY_BYTES:
+                    self._send_json(
+                        HTTPStatus.REQUEST_ENTITY_TOO_LARGE,
+                        {"error": "Invalid body size."},
+                    )
+                    return
+                try:
+                    payload = json.loads(self.rfile.read(length))
+                    normalized = validate_pipeline(payload)
+                except json.JSONDecodeError:
+                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": "Body must be valid JSON."})
+                    return
+                except PipelineValidationError as error:
+                    self._send_json(HTTPStatus.BAD_REQUEST, {"error": str(error)})
+                    return
+                self._send_json(HTTPStatus.OK, normalized)
+                return
             if request.path != "/api/open-file":
                 self._send_json(HTTPStatus.NOT_FOUND, {"error": "Not found."})
                 return
@@ -401,10 +521,11 @@ def create_server(
     port: int = 8002,
     html_path: Path = HTML_PATH,
     path_opener: Callable[[Path], None] = open_local_path,
+    graph_picker: Callable[[], Path | None] = choose_pipeline_file,
 ) -> ThreadingHTTPServer:
     return ThreadingHTTPServer(
         (host, port),
-        make_handler(graph_path.resolve(), html_path.resolve(), path_opener),
+        make_handler(graph_path.resolve(), html_path.resolve(), path_opener, graph_picker),
     )
 
 

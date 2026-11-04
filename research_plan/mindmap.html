@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MAL Idea Graph</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: light-dark(#f5f7fb, #10141c);
+      --panel: light-dark(#ffffff, #171d27);
+      --panel-2: light-dark(#eef2f8, #202837);
+      --text: light-dark(#172033, #edf2fb);
+      --muted: light-dark(#60708a, #a9b5c8);
+      --border: light-dark(#d7dfeb, #354155);
+      --accent: light-dark(#3158d4, #8ca8ff);
+      --accent-soft: light-dark(#e5ebff, #27355e);
+      --danger: light-dark(#b42318, #ff9b91);
+      --shadow: 0 14px 40px light-dark(#1d2b4a18, #00000055);
+      font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--bg); color: var(--text); }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
+    .app { min-height: 100vh; display: grid; grid-template-rows: auto 1fr; }
+    header { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 12px 18px; background: var(--panel); border-bottom: 1px solid var(--border); }
+    h1 { font-size: 18px; font-weight: 650; margin: 0 auto 0 0; }
+    h2 { font-size: 15px; margin: 0 0 14px; }
+    .status { color: var(--muted); font-size: 13px; min-width: 90px; }
+    .status.dirty { color: var(--accent); }
+    .status.error { color: var(--danger); }
+    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; }
+    .button { border: 1px solid var(--border); background: var(--panel); color: var(--text); border-radius: 8px; padding: 7px 10px; min-height: 36px; }
+    .button:hover { background: var(--panel-2); }
+    .button.primary { background: var(--accent); border-color: var(--accent); color: light-dark(#fff, #111827); }
+    .button.danger { color: var(--danger); }
+    .button:disabled { cursor: not-allowed; opacity: .45; }
+    .workspace { min-height: 0; display: grid; grid-template-columns: 310px minmax(0, 1fr); }
+    aside { padding: 18px; background: var(--panel); border-right: 1px solid var(--border); overflow: auto; }
+    label { display: grid; gap: 6px; margin-bottom: 14px; color: var(--muted); font-size: 13px; }
+    input, textarea, select { width: 100%; color: var(--text); background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; }
+    input[type="color"] { min-height: 42px; padding: 4px; }
+    input[type="checkbox"] { width: auto; }
+    input:focus, textarea:focus, select:focus, button:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent) 35%, transparent); outline-offset: 2px; }
+    textarea { min-height: 105px; resize: vertical; }
+    .inline-check { display: flex; align-items: center; gap: 8px; color: var(--text); }
+    .inspector-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+    .inspector-actions .button { flex: 1 1 82px; }
+    .edge-summary { margin: 0 0 14px; padding: 10px; border-left: 3px solid var(--accent); color: var(--muted); overflow-wrap: anywhere; }
+    .hint { color: var(--muted); font-size: 12px; line-height: 1.5; margin-top: 18px; }
+    [hidden] { display: none !important; }
+    main { min-width: 0; min-height: 0; position: relative; }
+    .canvas-tools { position: absolute; z-index: 8; top: 12px; left: 12px; right: 12px; display: flex; align-items: end; gap: 8px; flex-wrap: wrap; background: color-mix(in srgb, var(--panel) 91%, transparent); padding: 7px; border: 1px solid var(--border); border-radius: 10px; box-shadow: var(--shadow); }
+    .canvas-tools label { margin: 0; display: flex; align-items: center; gap: 7px; color: var(--text); }
+    .canvas-tools select { width: auto; min-width: 120px; padding: 7px; }
+    .canvas-tools input[type="color"] { width: 42px; min-height: 34px; }
+    .canvas-tools input[type="range"] { width: 95px; padding: 0; }
+    .viewport { width: 100%; height: calc(100vh - 61px); overflow: auto; background-image: radial-gradient(circle, var(--border) 1px, transparent 1px); background-size: 22px 22px; }
+    .stage { position: relative; transform-origin: top left; min-width: 1400px; min-height: 900px; }
+    #edges { position: absolute; inset: 0; overflow: visible; }
+    .edge-line { fill: none; stroke-width: 2.5; marker-end: url(#arrow); pointer-events: none; }
+    .edge-line.relation { stroke-dasharray: 8 6; }
+    .edge-line.selected { stroke-width: 5; filter: drop-shadow(0 0 3px var(--accent)); }
+    .edge-hit { fill: none; stroke: transparent; stroke-width: 18; cursor: pointer; pointer-events: stroke; }
+    .edge-preview { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-dasharray: 7 5; pointer-events: none; }
+    .selection-box { position: absolute; z-index: 6; border: 2px solid var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); border-radius: 5px; pointer-events: none; }
+    #nodes { position: absolute; inset: 0; pointer-events: none; }
+    .node-card { position: absolute; width: 230px; min-height: 58px; border: 2px solid color-mix(in srgb, var(--node-color) 58%, var(--border)); border-radius: 11px; background: var(--node-color); box-shadow: 0 6px 18px light-dark(#1d2b4a18, #00000040); user-select: none; touch-action: none; }
+    .node-card { pointer-events: auto; }
+    .node-card.selected { border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 24%, transparent); }
+    .node-body { display: block; width: 100%; min-height: 54px; padding: 11px 34px 11px 13px; border: 0; border-radius: 9px; background: transparent; color: var(--node-text); text-align: left; cursor: grab; overflow-wrap: anywhere; }
+    .node-card.dragging .node-body { cursor: grabbing; }
+    .node-body.bold { font-weight: 750; }
+    .note-dot { position: absolute; right: 14px; top: 17px; color: var(--node-text); opacity: .7; }
+    .port { position: absolute; z-index: 3; right: -13px; top: 16px; width: 26px; height: 26px; padding: 0; border: 2px solid var(--panel); border-radius: 50%; background: var(--accent); color: light-dark(#fff, #111827); line-height: 20px; }
+    .port:hover { transform: scale(1.12); }
+    .collapse { position: absolute; z-index: 3; left: -12px; top: 17px; width: 24px; height: 24px; padding: 0; border: 1px solid var(--border); border-radius: 50%; background: var(--panel); color: var(--text); }
+    .cycle-mark { position: absolute; left: 9px; bottom: -10px; padding: 2px 6px; border-radius: 10px; background: var(--panel); border: 1px solid var(--border); color: var(--muted); font-size: 10px; }
+    .empty { padding: 120px 24px; color: var(--muted); text-align: center; }
+    dialog { width: min(760px, calc(100% - 32px)); border: 1px solid var(--border); border-radius: 12px; background: var(--panel); color: var(--text); box-shadow: var(--shadow); }
+    dialog::backdrop { background: #0008; }
+    dialog textarea { min-height: 360px; font-family: ui-monospace, monospace; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+    @media (max-width: 800px) {
+      .workspace { grid-template-columns: 1fr; grid-template-rows: auto minmax(520px, 1fr); }
+      aside { border-right: 0; border-bottom: 1px solid var(--border); }
+      .viewport { height: 72vh; }
+      .canvas-tools { position: sticky; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>MAL Idea Graph</h1>
+      <span class="status" id="status" role="status">Loading...</span>
+      <div class="toolbar" aria-label="Graph actions">
+        <button class="button" id="undo" type="button">Undo</button>
+        <button class="button" id="redo" type="button">Redo</button>
+        <button class="button" id="export-mermaid" type="button">Mermaid</button>
+        <button class="button" id="export-json" type="button">JSON</button>
+        <button class="button primary" id="save" type="button">Save</button>
+      </div>
+    </header>
+    <div class="workspace">
+      <aside aria-label="Selection inspector">
+        <section id="no-selection">
+          <h2>No selection</h2>
+          <p class="hint">Select a node or an edge. You can create an isolated node directly on the canvas.</p>
+        </section>
+        <section id="node-inspector" hidden>
+          <h2>Selected node</h2>
+          <label>Idea
+            <input id="node-label" maxlength="300" autocomplete="off">
+          </label>
+          <label>Notes
+            <textarea id="node-note" maxlength="2000"></textarea>
+          </label>
+          <label>Node color
+            <input id="node-color" type="color">
+          </label>
+          <label class="inline-check">
+            <input id="node-bold" type="checkbox"> Bold text
+          </label>
+          <div class="inspector-actions">
+            <button class="button" id="add-child" type="button">Add child</button>
+            <button class="button" id="toggle-children" type="button" hidden>Collapse children</button>
+            <button class="button" id="copy-node" type="button">Copy</button>
+            <button class="button" id="paste-node" type="button" disabled>Paste</button>
+            <button class="button danger" id="delete-node" type="button">Delete</button>
+          </div>
+        </section>
+        <section id="multi-inspector" hidden>
+          <h2>Multiple selection</h2>
+          <p class="edge-summary" id="multi-summary"></p>
+          <p class="hint">Drag any selected node to move the whole group.</p>
+        </section>
+        <section id="edge-inspector" hidden>
+          <h2>Selected edge</h2>
+          <p class="edge-summary" id="edge-summary"></p>
+          <label>Edge type
+            <select id="edge-kind">
+              <option value="hierarchy">Hierarchy</option>
+              <option value="relation">Relation</option>
+            </select>
+          </label>
+          <label>Edge color
+            <input id="edge-color" type="color">
+          </label>
+          <button class="button danger" id="delete-edge" type="button">Delete edge</button>
+        </section>
+        <p class="hint">Drag a rectangle across the background to select several nodes, then drag any selected node to move the group. Use Ctrl + mouse wheel to zoom around the pointer, and Ctrl+C / Ctrl+V to copy and paste a selected node. To create an edge, drag the round handle on the right of one node to another node; a click only selects the node. Solid edges are hierarchical, and dashed edges are relations. Branches can be collapsed only outside cycles.</p>
+      </aside>
+      <main>
+        <div class="canvas-tools" aria-label="Canvas tools">
+          <button class="button primary" id="add-isolated" type="button">New isolated idea</button>
+          <label>New edge
+            <select id="new-edge-kind">
+              <option value="relation">Relation</option>
+              <option value="hierarchy">Hierarchy</option>
+            </select>
+          </label>
+          <label>Color <input id="new-edge-color" type="color" value="#64748b"></label>
+          <label>Zoom <input id="zoom" type="range" min="35" max="160" value="100"></label>
+          <button class="button" id="fit" type="button">Fit</button>
+          <button class="button" id="collapse-trees" type="button">Collapse trees</button>
+          <button class="button" id="expand-all" type="button">Show all</button>
+        </div>
+        <div class="viewport" id="viewport">
+          <div class="stage" id="stage">
+            <svg id="edges" aria-label="Graph edges"></svg>
+            <div id="nodes" role="group" aria-label="Graph nodes"></div>
+            <div class="selection-box" id="selection-box" hidden></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="export-dialog">
+    <h2 id="export-title">Export</h2>
+    <label for="export-source" class="sr-only">Export source</label>
+    <textarea id="export-source" readonly></textarea>
+    <div class="dialog-actions">
+      <button class="button" id="download" type="button">Download</button>
+      <button class="button primary" id="close-dialog" type="button">Close</button>
+    </div>
+  </dialog>
+
+  <script>
+    (() => {
+      const $ = selector => document.querySelector(selector);
+      const viewport = $('#viewport');
+      const stage = $('#stage');
+      const nodesLayer = $('#nodes');
+      const edgesLayer = $('#edges');
+      const status = $('#status');
+      const collapsed = new Set();
+      const selectedNodeIds = new Set();
+      const undoStack = [];
+      const redoStack = [];
+      let model = null;
+      let selection = null;
+      let dirty = false;
+      let zoom = 1;
+      let exportType = 'json';
+      let dragState = null;
+      let linkState = null;
+      let marqueeState = null;
+      let copiedNode = null;
+      let pasteCount = 0;
+
+      function clone(value) { return JSON.parse(JSON.stringify(value)); }
+      function nodeById(id) { return model?.nodes.find(node => node.id === id) || null; }
+      function edgeById(id) { return model?.edges.find(edge => edge.id === id) || null; }
+      function uniqueId(prefix, items) {
+        const used = new Set(items.map(item => item.id));
+        let id;
+        do { id = `${prefix}-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`; } while (used.has(id));
+        return id;
+      }
+      function setStatus(message, kind = dirty ? 'dirty' : '') {
+        status.textContent = message;
+        status.className = `status ${kind}`.trim();
+      }
+      function checkpoint(snapshot = clone(model)) {
+        undoStack.push(snapshot);
+        if (undoStack.length > 50) undoStack.shift();
+        redoStack.length = 0;
+      }
+      function markChanged(message = 'Unsaved changes') {
+        dirty = true;
+        setStatus(message, 'dirty');
+        updateHistoryButtons();
+        render();
+      }
+      function commit(action, message) {
+        checkpoint();
+        action();
+        markChanged(message);
+      }
+      function updateHistoryButtons() {
+        $('#undo').disabled = undoStack.length === 0;
+        $('#redo').disabled = redoStack.length === 0;
+      }
+      function ensureSelection() {
+        for (const id of [...selectedNodeIds]) if (!nodeById(id)) selectedNodeIds.delete(id);
+        if (selection?.type === 'node' && !nodeById(selection.id)) selection = null;
+        if (selection?.type === 'edge' && !edgeById(selection.id)) selection = null;
+      }
+      function contrastText(hex) {
+        const value = hex.replace('#', '');
+        const r = parseInt(value.slice(0, 2), 16);
+        const g = parseInt(value.slice(2, 4), 16);
+        const b = parseInt(value.slice(4, 6), 16);
+        return (r * 299 + g * 587 + b * 114) / 1000 > 150 ? '#172033' : '#ffffff';
+      }
+      function selectNode(id) {
+        selectedNodeIds.clear();
+        selectedNodeIds.add(id);
+        selection = { type: 'node', id };
+        syncInspector();
+        render();
+      }
+      function selectEdge(id) {
+        selectedNodeIds.clear();
+        selection = { type: 'edge', id };
+        syncInspector();
+        nodesLayer.querySelectorAll('.node-card.selected').forEach(card => card.classList.remove('selected'));
+        nodesLayer.querySelectorAll('.node-body[aria-pressed="true"]').forEach(body => body.setAttribute('aria-pressed', 'false'));
+        edgesLayer.querySelectorAll('.edge-line').forEach(line => line.classList.remove('selected'));
+        edgesLayer.querySelector(`[data-edge-id="${CSS.escape(id)}"] .edge-line`)?.classList.add('selected');
+      }
+      function syncInspector() {
+        ensureSelection();
+        const multiple = selectedNodeIds.size > 1;
+        $('#no-selection').hidden = Boolean(selection) || multiple;
+        $('#node-inspector').hidden = selection?.type !== 'node';
+        $('#edge-inspector').hidden = selection?.type !== 'edge';
+        $('#multi-inspector').hidden = !multiple;
+        $('#paste-node').disabled = !copiedNode;
+        if (multiple) $('#multi-summary').textContent = `${selectedNodeIds.size} nodes selected`;
+        if (selection?.type === 'node') {
+          const node = nodeById(selection.id);
+          $('#node-label').value = node.label;
+          $('#node-note').value = node.note || '';
+          $('#node-color').value = node.color;
+          $('#node-bold').checked = node.bold;
+          const canCollapse = hierarchyChildren(node.id).length > 0 && !cycleNodeIds().has(node.id);
+          $('#toggle-children').hidden = !canCollapse;
+          $('#toggle-children').textContent = collapsed.has(node.id) ? 'Show children' : 'Collapse children';
+        }
+        if (selection?.type === 'edge') {
+          const edge = edgeById(selection.id);
+          const source = nodeById(edge.source);
+          const target = nodeById(edge.target);
+          $('#edge-summary').textContent = `${source?.label || edge.source} → ${target?.label || edge.target}`;
+          $('#edge-kind').value = edge.kind;
+          $('#edge-color').value = edge.color;
+        }
+      }
+      function cycleNodeIds() {
+        const adjacency = new Map(model.nodes.map(node => [node.id, []]));
+        model.edges.forEach(edge => adjacency.get(edge.source)?.push(edge.target));
+        const indexById = new Map();
+        const lowById = new Map();
+        const onStack = new Set();
+        const stack = [];
+        const cycles = new Set();
+        let index = 0;
+        function strongConnect(id) {
+          indexById.set(id, index);
+          lowById.set(id, index);
+          index += 1;
+          stack.push(id);
+          onStack.add(id);
+          for (const target of adjacency.get(id) || []) {
+            if (!indexById.has(target)) {
+              strongConnect(target);
+              lowById.set(id, Math.min(lowById.get(id), lowById.get(target)));
+            } else if (onStack.has(target)) {
+              lowById.set(id, Math.min(lowById.get(id), indexById.get(target)));
+            }
+          }
+          if (lowById.get(id) === indexById.get(id)) {
+            const component = [];
+            let current;
+            do {
+              current = stack.pop();
+              onStack.delete(current);
+              component.push(current);
+            } while (current !== id);
+            const selfLoop = component.length === 1 && (adjacency.get(id) || []).includes(id);
+            if (component.length > 1 || selfLoop) component.forEach(nodeId => cycles.add(nodeId));
+          }
+        }
+        model.nodes.forEach(node => { if (!indexById.has(node.id)) strongConnect(node.id); });
+        return cycles;
+      }
+      function hierarchyChildren(id) {
+        return model.edges.filter(edge => edge.kind === 'hierarchy' && edge.source === id).map(edge => edge.target);
+      }
+      function hiddenNodeIds(cycles) {
+        const hidden = new Set();
+        for (const rootId of collapsed) {
+          if (cycles.has(rootId)) continue;
+          const pending = [...hierarchyChildren(rootId)];
+          while (pending.length) {
+            const id = pending.pop();
+            if (hidden.has(id) || cycles.has(id)) continue;
+            hidden.add(id);
+            pending.push(...hierarchyChildren(id));
+          }
+        }
+        return hidden;
+      }
+      function stagePoint(clientX, clientY) {
+        const rect = viewport.getBoundingClientRect();
+        return {
+          x: (clientX - rect.left + viewport.scrollLeft) / zoom,
+          y: (clientY - rect.top + viewport.scrollTop) / zoom,
+        };
+      }
+      function zoomAround(nextZoom, clientX, clientY) {
+        const rect = viewport.getBoundingClientRect();
+        const offsetX = clientX - rect.left;
+        const offsetY = clientY - rect.top;
+        const graphX = (offsetX + viewport.scrollLeft) / zoom;
+        const graphY = (offsetY + viewport.scrollTop) / zoom;
+        zoom = Math.max(.35, Math.min(1.6, nextZoom));
+        $('#zoom').value = String(Math.round(zoom * 100));
+        render();
+        viewport.scrollLeft = graphX * zoom - offsetX;
+        viewport.scrollTop = graphY * zoom - offsetY;
+      }
+      function drawSelectionBox() {
+        const box = $('#selection-box');
+        if (!marqueeState) { box.hidden = true; return; }
+        const left = Math.min(marqueeState.startX, marqueeState.x);
+        const top = Math.min(marqueeState.startY, marqueeState.y);
+        box.style.left = `${left}px`;
+        box.style.top = `${top}px`;
+        box.style.width = `${Math.abs(marqueeState.x - marqueeState.startX)}px`;
+        box.style.height = `${Math.abs(marqueeState.y - marqueeState.startY)}px`;
+        box.hidden = false;
+      }
+      function finishMarquee() {
+        if (!marqueeState) return;
+        const left = Math.min(marqueeState.startX, marqueeState.x);
+        const right = Math.max(marqueeState.startX, marqueeState.x);
+        const top = Math.min(marqueeState.startY, marqueeState.y);
+        const bottom = Math.max(marqueeState.startY, marqueeState.y);
+        const dragged = right - left > 4 || bottom - top > 4;
+        const visibleIds = new Set([...nodesLayer.querySelectorAll('.node-card')].map(card => card.dataset.nodeId));
+        selectedNodeIds.clear();
+        if (dragged) {
+          model.nodes.forEach(node => {
+            if (visibleIds.has(node.id) && node.x <= right && node.x + 230 >= left && node.y <= bottom && node.y + 58 >= top) {
+              selectedNodeIds.add(node.id);
+            }
+          });
+        }
+        selection = selectedNodeIds.size === 1 ? { type: 'node', id: [...selectedNodeIds][0] } : null;
+        marqueeState = null;
+        drawSelectionBox();
+        render();
+      }
+      function edgePath(edge) {
+        const source = nodeById(edge.source);
+        const target = nodeById(edge.target);
+        if (!source || !target) return '';
+        if (source.id === target.id) {
+          const x = source.x + 115;
+          const y = source.y + 29;
+          return `M ${x + 95} ${y} C ${x + 170} ${y - 90}, ${x - 80} ${y - 110}, ${x - 90} ${y}`;
+        }
+        const sx = source.x + 230;
+        const sy = source.y + 29;
+        const tx = target.x;
+        const ty = target.y + 29;
+        const bend = Math.max(60, Math.abs(tx - sx) * .5);
+        const direction = tx >= sx ? 1 : -1;
+        return `M ${sx} ${sy} C ${sx + bend * direction} ${sy}, ${tx - bend * direction} ${ty}, ${tx} ${ty}`;
+      }
+      function previewPath() {
+        if (!linkState) return '';
+        const source = nodeById(linkState.source);
+        if (!source) return '';
+        const sx = source.x + 230;
+        const sy = source.y + 29;
+        const bend = Math.max(50, Math.abs(linkState.x - sx) * .5);
+        return `M ${sx} ${sy} C ${sx + bend} ${sy}, ${linkState.x - bend} ${linkState.y}, ${linkState.x} ${linkState.y}`;
+      }
+      function render() {
+        if (!model) return;
+        ensureSelection();
+        const cycles = cycleNodeIds();
+        const hidden = hiddenNodeIds(cycles);
+        const visibleNodes = model.nodes.filter(node => !hidden.has(node.id));
+        const visibleIds = new Set(visibleNodes.map(node => node.id));
+        const width = Math.max(1400, ...visibleNodes.map(node => node.x + 380));
+        const height = Math.max(900, ...visibleNodes.map(node => node.y + 220));
+        stage.style.width = `${width}px`;
+        stage.style.height = `${height}px`;
+        stage.style.transform = `scale(${zoom})`;
+        stage.style.marginRight = `${width * (zoom - 1)}px`;
+        stage.style.marginBottom = `${height * (zoom - 1)}px`;
+        edgesLayer.replaceChildren();
+        edgesLayer.setAttribute('width', width);
+        edgesLayer.setAttribute('height', height);
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        defs.innerHTML = '<marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth"><path d="M 0 0 L 8 4 L 0 8 z" fill="context-stroke"></path></marker>';
+        edgesLayer.appendChild(defs);
+        model.edges.forEach(edge => {
+          if (!visibleIds.has(edge.source) || !visibleIds.has(edge.target)) return;
+          const group = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          group.dataset.edgeId = edge.id;
+          const hit = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          hit.setAttribute('class', 'edge-hit');
+          hit.setAttribute('d', edgePath(edge));
+          hit.setAttribute('tabindex', '0');
+          hit.setAttribute('aria-label', `Edge from ${nodeById(edge.source)?.label} to ${nodeById(edge.target)?.label}`);
+          const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          line.setAttribute('class', `edge-line ${edge.kind}${selection?.type === 'edge' && selection.id === edge.id ? ' selected' : ''}`);
+          line.setAttribute('d', edgePath(edge));
+          line.setAttribute('stroke', edge.color);
+          hit.addEventListener('pointerdown', event => {
+            event.preventDefault();
+            event.stopPropagation();
+            selectEdge(edge.id);
+          });
+          hit.addEventListener('click', event => event.stopPropagation());
+          hit.addEventListener('keydown', event => { if (event.key === 'Enter' || event.key === ' ') selectEdge(edge.id); });
+          group.append(line, hit);
+          edgesLayer.appendChild(group);
+        });
+        if (linkState) {
+          const preview = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          preview.setAttribute('class', 'edge-preview');
+          preview.setAttribute('d', previewPath());
+          edgesLayer.appendChild(preview);
+        }
+        nodesLayer.replaceChildren();
+        visibleNodes.forEach(node => {
+          const card = document.createElement('div');
+          card.className = `node-card${selectedNodeIds.has(node.id) ? ' selected' : ''}${dragState?.ids.includes(node.id) ? ' dragging' : ''}`;
+          card.dataset.nodeId = node.id;
+          card.style.left = `${node.x}px`;
+          card.style.top = `${node.y}px`;
+          card.style.setProperty('--node-color', node.color);
+          card.style.setProperty('--node-text', contrastText(node.color));
+          const body = document.createElement('button');
+          body.type = 'button';
+          body.className = `node-body${node.bold ? ' bold' : ''}`;
+          body.textContent = node.label;
+          body.setAttribute('aria-pressed', selectedNodeIds.has(node.id) ? 'true' : 'false');
+          body.addEventListener('click', () => {
+            if (selectedNodeIds.size > 1 && selectedNodeIds.has(node.id)) return;
+            selectNode(node.id);
+          });
+          body.addEventListener('dblclick', () => { selectNode(node.id); $('#node-label').focus(); $('#node-label').select(); });
+          if (node.note) {
+            const dot = document.createElement('span');
+            dot.className = 'note-dot';
+            dot.textContent = '●';
+            dot.setAttribute('aria-label', 'Contains notes');
+            card.appendChild(dot);
+          }
+          const port = document.createElement('button');
+          port.type = 'button';
+          port.className = 'port';
+          port.textContent = '→';
+          port.setAttribute('aria-label', `Create an edge from ${node.label}`);
+          port.addEventListener('pointerdown', event => {
+            event.preventDefault();
+            event.stopPropagation();
+            const point = stagePoint(event.clientX, event.clientY);
+            linkState = {
+              source: node.id, x: point.x, y: point.y,
+              startClientX: event.clientX, startClientY: event.clientY, moved: false,
+            };
+            selectNode(node.id);
+          });
+          const children = hierarchyChildren(node.id);
+          if (children.length && !cycles.has(node.id)) {
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'collapse';
+            toggle.textContent = collapsed.has(node.id) ? '+' : '−';
+            toggle.setAttribute('aria-label', `${collapsed.has(node.id) ? 'Show' : 'Hide'} child nodes of ${node.label}`);
+            toggle.addEventListener('click', event => {
+              event.stopPropagation();
+              collapsed.has(node.id) ? collapsed.delete(node.id) : collapsed.add(node.id);
+              render();
+            });
+            card.appendChild(toggle);
+          } else if (cycles.has(node.id)) {
+            const cycle = document.createElement('span');
+            cycle.className = 'cycle-mark';
+            cycle.textContent = 'cycle';
+            card.appendChild(cycle);
+          }
+          card.addEventListener('pointerdown', event => {
+            if (event.button !== 0 || event.target.closest('.port, .collapse')) return;
+            const ids = selectedNodeIds.size > 1 && selectedNodeIds.has(node.id)
+              ? [...selectedNodeIds]
+              : [node.id];
+            if (ids.length === 1) {
+              selectedNodeIds.clear();
+              selectedNodeIds.add(node.id);
+              selection = { type: 'node', id: node.id };
+            }
+            dragState = {
+              ids,
+              startClientX: event.clientX,
+              startClientY: event.clientY,
+              positions: Object.fromEntries(ids.map(id => {
+                const member = nodeById(id);
+                return [id, { x: member.x, y: member.y }];
+              })),
+              snapshot: clone(model),
+              moved: false,
+            };
+            syncInspector();
+            render();
+          });
+          card.append(body, port);
+          nodesLayer.appendChild(card);
+        });
+        if (!visibleNodes.length) {
+          const empty = document.createElement('p');
+          empty.className = 'empty';
+          empty.textContent = 'The graph is empty. Create a new isolated idea.';
+          nodesLayer.appendChild(empty);
+        }
+        syncInspector();
+      }
+      function addIsolated() {
+        const center = stagePoint(
+          viewport.getBoundingClientRect().left + viewport.clientWidth / 2,
+          viewport.getBoundingClientRect().top + viewport.clientHeight / 2,
+        );
+        const node = {
+          id: uniqueId('node', model.nodes),
+          label: 'New idea',
+          note: '',
+          x: Math.max(20, center.x - 115),
+          y: Math.max(90, center.y - 29),
+          color: '#dfe7ff',
+          bold: false,
+        };
+        commit(() => {
+          model.nodes.push(node);
+          selectedNodeIds.clear();
+          selectedNodeIds.add(node.id);
+          selection = { type: 'node', id: node.id };
+        }, 'Isolated idea created');
+        $('#node-label').focus();
+        $('#node-label').select();
+      }
+      function addChild() {
+        if (selection?.type !== 'node') return;
+        const parent = nodeById(selection.id);
+        const child = {
+          id: uniqueId('node', model.nodes), label: 'New child idea', note: '',
+          x: parent.x + 310, y: parent.y + 90, color: '#dff7ea', bold: false,
+        };
+        const edge = {
+          id: uniqueId('edge', model.edges), source: parent.id, target: child.id,
+          kind: 'hierarchy', color: $('#new-edge-color').value,
+        };
+        commit(() => {
+          model.nodes.push(child);
+          model.edges.push(edge);
+          collapsed.delete(parent.id);
+          selectedNodeIds.clear();
+          selectedNodeIds.add(child.id);
+          selection = { type: 'node', id: child.id };
+        }, 'Child node created');
+        $('#node-label').focus();
+        $('#node-label').select();
+      }
+      function deleteNode() {
+        if (selection?.type !== 'node') return;
+        const id = selection.id;
+        commit(() => {
+          model.nodes = model.nodes.filter(node => node.id !== id);
+          model.edges = model.edges.filter(edge => edge.source !== id && edge.target !== id);
+          collapsed.delete(id);
+          selectedNodeIds.delete(id);
+          selection = null;
+        }, 'Node deleted');
+      }
+      function copySelectedNode() {
+        if (selection?.type !== 'node') return;
+        const node = nodeById(selection.id);
+        copiedNode = {
+          label: node.label, note: node.note || '', color: node.color, bold: node.bold,
+          x: node.x, y: node.y,
+        };
+        pasteCount = 0;
+        $('#paste-node').disabled = false;
+        setStatus('Node copied');
+      }
+      function pasteNode() {
+        if (!copiedNode) return;
+        pasteCount += 1;
+        const offset = 45 * pasteCount;
+        const node = {
+          id: uniqueId('node', model.nodes),
+          label: copiedNode.label,
+          note: copiedNode.note,
+          x: Math.max(20, copiedNode.x + offset),
+          y: Math.max(90, copiedNode.y + offset),
+          color: copiedNode.color,
+          bold: copiedNode.bold,
+        };
+        commit(() => {
+          model.nodes.push(node);
+          selectedNodeIds.clear();
+          selectedNodeIds.add(node.id);
+          selection = { type: 'node', id: node.id };
+        }, 'Node pasted');
+      }
+      function deleteEdge() {
+        if (selection?.type !== 'edge') return;
+        const id = selection.id;
+        commit(() => { model.edges = model.edges.filter(edge => edge.id !== id); selection = null; }, 'Edge deleted');
+      }
+      function updateNode() {
+        if (selection?.type !== 'node') return;
+        const node = nodeById(selection.id);
+        const label = $('#node-label').value.trim();
+        if (!label) { setStatus('The label cannot be empty.', 'error'); return; }
+        const next = { label, note: $('#node-note').value.trim(), color: $('#node-color').value, bold: $('#node-bold').checked };
+        if (node.label === next.label && node.note === next.note && node.color === next.color && node.bold === next.bold) return;
+        commit(() => Object.assign(node, next), 'Node updated');
+      }
+      function updateEdge() {
+        if (selection?.type !== 'edge') return;
+        const edge = edgeById(selection.id);
+        const next = { kind: $('#edge-kind').value, color: $('#edge-color').value };
+        if (edge.kind === next.kind && edge.color === next.color) return;
+        commit(() => Object.assign(edge, next), 'Edge updated');
+      }
+      function escapeMermaid(text) { return text.replace(/\\/g, '\\\\').replace(/"/g, '#quot;').replace(/[\r\n]+/g, ' '); }
+      function mermaidSource() {
+        const names = new Map(model.nodes.map((node, index) => [node.id, `n${index}`]));
+        const lines = ['flowchart LR'];
+        model.nodes.forEach(node => lines.push(`  ${names.get(node.id)}["${escapeMermaid(node.label)}"]`));
+        model.edges.forEach(edge => lines.push(`  ${names.get(edge.source)} ${edge.kind === 'hierarchy' ? '-->' : '-.->'} ${names.get(edge.target)}`));
+        model.nodes.forEach(node => lines.push(`  style ${names.get(node.id)} fill:${node.color}${node.bold ? ',font-weight:bold' : ''}`));
+        model.edges.forEach((edge, index) => lines.push(`  linkStyle ${index} stroke:${edge.color}`));
+        return lines.join('\n');
+      }
+      function showExport(type) {
+        exportType = type;
+        $('#export-title').textContent = type === 'json' ? 'Export JSON' : 'Export Mermaid (flowchart)';
+        $('#export-source').value = type === 'json' ? JSON.stringify(model, null, 2) : mermaidSource();
+        $('#export-dialog').showModal();
+      }
+      function downloadExport() {
+        const blob = new Blob([$('#export-source').value], { type: exportType === 'json' ? 'application/json' : 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = exportType === 'json' ? 'research_graph.json' : 'research_graph.mmd';
+        link.click();
+        URL.revokeObjectURL(url);
+      }
+      function undo() {
+        if (!undoStack.length) return;
+        redoStack.push(clone(model));
+        model = undoStack.pop();
+        ensureSelection();
+        markChanged('Change undone');
+      }
+      function redo() {
+        if (!redoStack.length) return;
+        undoStack.push(clone(model));
+        model = redoStack.pop();
+        ensureSelection();
+        dirty = true;
+        setStatus('Change restored', 'dirty');
+        updateHistoryButtons();
+        render();
+      }
+      async function save() {
+        if (selection?.type === 'node') updateNode();
+        if (selection?.type === 'edge') updateEdge();
+        setStatus('Saving...');
+        try {
+          const response = await fetch('/api/mindmap', {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(model),
+          });
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || `Save failed (${response.status})`);
+          model = payload;
+          dirty = false;
+          setStatus('Saved');
+          render();
+        } catch (error) {
+          setStatus(error.message, 'error');
+        }
+      }
+      async function load() {
+        try {
+          const response = await fetch('/api/mindmap');
+          const payload = await response.json();
+          if (!response.ok) throw new Error(payload.error || 'Could not load the graph.');
+          model = payload;
+          selectedNodeIds.clear();
+          if (model.nodes.length) selectedNodeIds.add(model.nodes[0].id);
+          selection = model.nodes.length ? { type: 'node', id: model.nodes[0].id } : null;
+          dirty = false;
+          setStatus('Saved');
+          updateHistoryButtons();
+          render();
+          requestAnimationFrame(() => $('#fit').click());
+        } catch (error) {
+          setStatus(error.message, 'error');
+          viewport.innerHTML = `<p class="empty">${error.message}</p>`;
+        }
+      }
+
+      window.addEventListener('pointermove', event => {
+        if (dragState) {
+          const dx = (event.clientX - dragState.startClientX) / zoom;
+          const dy = (event.clientY - dragState.startClientY) / zoom;
+          if (!dragState.moved && Math.hypot(dx, dy) > 3) {
+            checkpoint(dragState.snapshot);
+            dragState.moved = true;
+          }
+          if (dragState.moved) {
+            dragState.ids.forEach(id => {
+              const node = nodeById(id);
+              const start = dragState.positions[id];
+              node.x = Math.max(20, start.x + dx);
+              node.y = Math.max(90, start.y + dy);
+            });
+            dirty = true;
+            setStatus(dragState.ids.length > 1 ? 'Group moved' : 'Position updated', 'dirty');
+            updateHistoryButtons();
+            render();
+          }
+        }
+        if (linkState) {
+          if (!linkState.moved && Math.hypot(event.clientX - linkState.startClientX, event.clientY - linkState.startClientY) > 4) {
+            linkState.moved = true;
+          }
+          const point = stagePoint(event.clientX, event.clientY);
+          linkState.x = point.x;
+          linkState.y = point.y;
+          render();
+        }
+        if (marqueeState) {
+          const point = stagePoint(event.clientX, event.clientY);
+          marqueeState.x = point.x;
+          marqueeState.y = point.y;
+          drawSelectionBox();
+        }
+      });
+      window.addEventListener('pointerup', event => {
+        if (dragState) {
+          const moved = dragState.moved;
+          dragState = null;
+          if (moved) render();
+        }
+        if (linkState) {
+          const source = linkState.source;
+          const moved = linkState.moved;
+          const targetCard = document.elementFromPoint(event.clientX, event.clientY)?.closest('.node-card');
+          const target = targetCard?.dataset.nodeId;
+          linkState = null;
+          if (moved && target && target !== source) {
+            const edge = {
+              id: uniqueId('edge', model.edges), source, target,
+              kind: $('#new-edge-kind').value, color: $('#new-edge-color').value,
+            };
+            commit(() => {
+              model.edges.push(edge);
+              selectedNodeIds.clear();
+              selection = { type: 'edge', id: edge.id };
+            }, 'Edge created');
+          } else {
+            render();
+          }
+        }
+        if (marqueeState) finishMarquee();
+      });
+
+      $('#add-isolated').addEventListener('click', addIsolated);
+      $('#add-child').addEventListener('click', addChild);
+      $('#copy-node').addEventListener('click', copySelectedNode);
+      $('#paste-node').addEventListener('click', pasteNode);
+      $('#delete-node').addEventListener('click', deleteNode);
+      $('#toggle-children').addEventListener('click', () => {
+        if (selection?.type !== 'node') return;
+        const id = selection.id;
+        if (cycleNodeIds().has(id) || !hierarchyChildren(id).length) return;
+        collapsed.has(id) ? collapsed.delete(id) : collapsed.add(id);
+        render();
+      });
+      $('#delete-edge').addEventListener('click', deleteEdge);
+      $('#node-label').addEventListener('change', updateNode);
+      $('#node-note').addEventListener('change', updateNode);
+      $('#node-color').addEventListener('change', updateNode);
+      $('#node-bold').addEventListener('change', updateNode);
+      $('#edge-kind').addEventListener('change', updateEdge);
+      $('#edge-color').addEventListener('change', updateEdge);
+      $('#undo').addEventListener('click', undo);
+      $('#redo').addEventListener('click', redo);
+      $('#save').addEventListener('click', save);
+      $('#collapse-trees').addEventListener('click', () => {
+        const cycles = cycleNodeIds();
+        model.nodes.forEach(node => { if (!cycles.has(node.id) && hierarchyChildren(node.id).length) collapsed.add(node.id); });
+        render();
+      });
+      $('#expand-all').addEventListener('click', () => { collapsed.clear(); render(); });
+      $('#zoom').addEventListener('input', event => { zoom = Number(event.target.value) / 100; render(); });
+      viewport.addEventListener('wheel', event => {
+        if (!event.ctrlKey) return;
+        event.preventDefault();
+        zoomAround(zoom * Math.exp(-event.deltaY * .002), event.clientX, event.clientY);
+      }, { passive: false });
+      $('#fit').addEventListener('click', () => {
+        if (!model?.nodes.length) return;
+        const cycles = cycleNodeIds();
+        const hidden = hiddenNodeIds(cycles);
+        const visible = model.nodes.filter(node => !hidden.has(node.id));
+        const maxX = Math.max(...visible.map(node => node.x + 280));
+        const maxY = Math.max(...visible.map(node => node.y + 130));
+        zoom = Math.max(.35, Math.min(1, (viewport.clientWidth - 30) / maxX, (viewport.clientHeight - 30) / maxY));
+        $('#zoom').value = String(Math.round(zoom * 100));
+        render();
+        viewport.scrollTo({ left: 0, top: 0 });
+      });
+      $('#export-json').addEventListener('click', () => showExport('json'));
+      $('#export-mermaid').addEventListener('click', () => showExport('mermaid'));
+      $('#download').addEventListener('click', downloadExport);
+      $('#close-dialog').addEventListener('click', () => $('#export-dialog').close());
+      viewport.addEventListener('pointerdown', event => {
+        if (event.button === 0 && (event.target === viewport || event.target === stage || event.target === nodesLayer || event.target === edgesLayer)) {
+          event.preventDefault();
+          selectedNodeIds.clear();
+          selection = null;
+          render();
+          const point = stagePoint(event.clientX, event.clientY);
+          marqueeState = { startX: point.x, startY: point.y, x: point.x, y: point.y };
+          drawSelectionBox();
+        }
+      });
+      document.addEventListener('keydown', event => {
+        const editing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName);
+        if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') { event.preventDefault(); save(); }
+        if ((event.ctrlKey || event.metaKey) && !editing && event.key.toLowerCase() === 'c') { event.preventDefault(); copySelectedNode(); }
+        if ((event.ctrlKey || event.metaKey) && !editing && event.key.toLowerCase() === 'v') { event.preventDefault(); pasteNode(); }
+        if (event.key === 'Delete' && !editing) {
+          if (selection?.type === 'node') deleteNode();
+          if (selection?.type === 'edge') deleteEdge();
+        }
+      });
+      window.addEventListener('beforeunload', event => { if (dirty) event.preventDefault(); });
+      load();
+    })();
+  </script>
+</body>
+</html>

@@ -113,8 +113,10 @@ class PipelineServerTests(unittest.TestCase):
         root = Path(self.temporary_directory.name)
         self.root = root
         self.graph_path = root / "pipeline.json"
+        self.selected_path = root / "selected.json"
         self.html_path = root / "b1_pipeline.html"
         pipeline_web.save_pipeline(self.graph_path, sample_pipeline())
+        pipeline_web.save_pipeline(self.selected_path, sample_pipeline())
         self.html_path.write_text("<!doctype html><title>B1 Pipeline</title>", encoding="utf-8")
         self.opened_paths: list[Path] = []
         self.server = pipeline_web.create_server(
@@ -122,6 +124,7 @@ class PipelineServerTests(unittest.TestCase):
             port=0,
             html_path=self.html_path,
             path_opener=self.opened_paths.append,
+            graph_picker=lambda: self.selected_path,
         )
         self.thread = threading.Thread(target=self.server.serve_forever, daemon=True)
         self.thread.start()
@@ -195,6 +198,70 @@ class PipelineServerTests(unittest.TestCase):
         self.assertEqual(raised.exception.code, 400)
         raised.exception.close()
         self.assertEqual(self.graph_path.read_text(encoding="utf-8"), original)
+
+    def test_validation_accepts_selected_graph_without_overwriting_server_graph(self) -> None:
+        original = self.graph_path.read_text(encoding="utf-8")
+        payload = sample_pipeline()
+        payload["nodes"][0]["title"] = "Selected file"
+
+        status, response = self.request_json(
+            "/api/validate-pipeline", method="POST", payload=payload
+        )
+
+        self.assertEqual(status, 200)
+        self.assertEqual(response["nodes"][0]["title"], "Selected file")
+        self.assertEqual(self.graph_path.read_text(encoding="utf-8"), original)
+
+    def test_validation_rejects_invalid_selected_graph(self) -> None:
+        original = self.graph_path.read_text(encoding="utf-8")
+        payload = sample_pipeline()
+        payload["edges"][0]["target"] = "missing"
+        request = Request(
+            self.base_url + "/api/validate-pipeline",
+            data=json.dumps(payload).encode("utf-8"),
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+
+        with self.assertRaises(HTTPError) as raised:
+            urlopen(request, timeout=2)
+
+        self.assertEqual(raised.exception.code, 400)
+        raised.exception.close()
+        self.assertEqual(self.graph_path.read_text(encoding="utf-8"), original)
+
+    def test_browse_then_save_replaces_selected_file_only(self) -> None:
+        original_server_graph = self.graph_path.read_text(encoding="utf-8")
+        status, selection = self.request_json("/api/browse-pipeline", method="POST")
+        selected_graph = selection["graph"]
+        selected_graph["nodes"][0]["title"] = "Updated selected graph"
+
+        save_status, saved = self.request_json(
+            "/api/selected-pipeline",
+            method="PUT",
+            payload={"token": selection["token"], "graph": selected_graph},
+        )
+
+        self.assertEqual(status, 200)
+        self.assertEqual(selection["name"], "selected.json")
+        self.assertEqual(save_status, 200)
+        self.assertEqual(saved["nodes"][0]["title"], "Updated selected graph")
+        self.assertEqual(pipeline_web.load_pipeline(self.selected_path), saved)
+        self.assertEqual(self.graph_path.read_text(encoding="utf-8"), original_server_graph)
+
+    def test_save_selected_requires_token(self) -> None:
+        request = Request(
+            self.base_url + "/api/selected-pipeline",
+            data=json.dumps({"token": "invalid", "graph": sample_pipeline()}).encode(),
+            headers={"Content-Type": "application/json"},
+            method="PUT",
+        )
+
+        with self.assertRaises(HTTPError) as raised:
+            urlopen(request, timeout=2)
+
+        self.assertEqual(raised.exception.code, 400)
+        raised.exception.close()
 
     def test_post_opens_existing_file_beneath_selected_root(self) -> None:
         target = self.root / "files" / "report.txt"

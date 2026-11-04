@@ -20,6 +20,8 @@
     .dot.file { background:var(--yellow); }
     .dot.deterministic { background:#7d8790; }
     .top-controls { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:10px; margin-bottom:12px; }
+    .graph-file-controls { display:flex; align-items:center; gap:8px; margin-bottom:12px; font-size:12px; }
+    .graph-file-controls span { color:var(--muted); overflow-wrap:anywhere; }
     .root-explorer,.editor-toolbar { display:flex; align-items:center; gap:8px; min-height:52px; padding:8px 10px; border:1px solid var(--border); border-radius:7px; background:var(--surface); box-shadow:0 4px 12px rgba(23,32,42,.05); }
     .root-explorer label,.field label { color:var(--muted); font-size:10px; font-weight:800; text-transform:uppercase; }
     .root-explorer input[type="text"] { width:100%; min-width:180px; height:34px; padding:0 9px; border:1px solid var(--border); border-radius:4px; background:#f8fafb; color:var(--ink); font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; }
@@ -30,8 +32,12 @@
     button.danger { color:var(--danger); }
     button:disabled { cursor:default; opacity:.45; }
     .save-state { min-width:76px; color:var(--muted); font-size:11px; text-align:right; }
+    .canvas-size-controls { display:flex; align-items:center; gap:5px; padding-left:3px; color:var(--muted); font-size:10px; font-weight:800; text-transform:uppercase; }
+    .canvas-size-controls input { width:72px; height:32px; padding:0 6px; border:1px solid var(--border); border-radius:4px; background:#f8fafb; color:var(--ink); font-size:11px; font-variant-numeric:tabular-nums; }
+    .canvas-size-current { min-width:82px; color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums; text-align:center; white-space:nowrap; }
     .workspace { display:grid; grid-template-columns:minmax(0,1fr) 290px; gap:12px; align-items:start; }
-    .pipeline-shell { min-width:0; height:calc(100vh - 190px); min-height:560px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--border); border-radius:8px; background:var(--surface); box-shadow:0 10px 26px rgba(23,32,42,.08); }
+    .pipeline-shell { min-width:0; height:calc(100vh - 190px); min-height:560px; overflow:auto; overscroll-behavior:contain; border:1px solid var(--border); border-radius:8px; background:var(--surface); box-shadow:0 10px 26px rgba(23,32,42,.08); cursor:crosshair; }
+    .pipeline-shell.panning { cursor:grabbing; user-select:none; }
     .canvas-stage { position:relative; min-width:1px; min-height:1px; }
     .pipeline { position:absolute; left:0; top:0; width:1490px; min-height:2270px; transform-origin:0 0; background-color:#fbfcfc; background-image:radial-gradient(#cfd7dc .8px,transparent .8px); background-size:20px 20px; user-select:none; }
     .zoom-value { min-width:42px; color:var(--muted); font-size:11px; font-variant-numeric:tabular-nums; text-align:center; }
@@ -39,7 +45,7 @@
     .flow-lines { z-index:1; pointer-events:auto; }
     .node-layer { z-index:3; pointer-events:none; }
     .edge-label-layer { z-index:2; pointer-events:none; }
-    .flow-lines path { fill:none; stroke-width:2; vector-effect:non-scaling-stroke; }
+    .flow-lines > path { fill:none; stroke-width:2; vector-effect:non-scaling-stroke; }
     .flow-lines path.dashed { stroke-dasharray:7 5; }
     .flow-lines path.edge-selected { stroke-width:4; }
     .flow-lines path.edge-hit { stroke:transparent; stroke-width:16; pointer-events:stroke; cursor:pointer; }
@@ -47,6 +53,8 @@
     .node { position:absolute; display:block; min-height:112px; padding:15px; border:1px solid var(--border); border-left:5px solid var(--yellow); border-radius:7px; background:var(--node-color,var(--surface)); color:inherit; box-shadow:0 7px 18px rgba(23,32,42,.1); cursor:grab; pointer-events:auto; touch-action:none; }
     .node:hover { box-shadow:0 11px 24px rgba(23,32,42,.15); }
     .node.selected { outline:3px solid rgba(8,127,114,.45); outline-offset:2px; }
+    .node-resize-handle { position:absolute; right:3px; bottom:3px; width:13px; height:13px; border-right:3px solid var(--teal); border-bottom:3px solid var(--teal); cursor:nwse-resize; touch-action:none; }
+    .selection-box { position:absolute; z-index:6; border:2px solid var(--teal); border-radius:5px; background:rgba(8,127,114,.14); pointer-events:none; }
     .node.connection-source { outline:3px solid rgba(45,108,223,.55); outline-offset:2px; }
     .node.dragging { cursor:grabbing; box-shadow:0 16px 32px rgba(23,32,42,.2); }
     .node[data-kind="agent"] { min-height:184px; border:2px solid var(--teal); text-align:center; }
@@ -63,6 +71,14 @@
     .details { margin:10px 0 0; padding:0; list-style:none; }
     .details li { padding:4px 0; border-top:1px solid rgba(105,114,125,.17); color:#4d5963; font-size:10px; }
     .open-file { min-height:26px; margin-top:10px; padding:0 7px; border-color:rgba(8,127,114,.4); background:rgba(255,255,255,.72); color:var(--teal); cursor:pointer; touch-action:auto; }
+    #preview-exit { display:none; }
+    body.preview-mode { background:#fff; }
+    body.preview-mode .page { width:100%; height:100vh; padding:0; }
+    body.preview-mode header,body.preview-mode .top-controls,body.preview-mode .inspector,body.preview-mode footer { display:none; }
+    body.preview-mode .workspace { display:block; height:100vh; }
+    body.preview-mode .pipeline-shell { width:100vw; height:100vh; min-height:0; border:0; border-radius:0; box-shadow:none; background:#fff; }
+    body.preview-mode .pipeline { background-color:#fff; background-image:none; }
+    body.preview-mode #preview-exit { display:block; position:fixed; top:16px; right:16px; z-index:10; box-shadow:0 3px 12px rgba(23,32,42,.16); }
     .inspector { position:sticky; top:12px; padding:14px; border:1px solid var(--border); border-radius:8px; background:var(--surface); box-shadow:0 8px 20px rgba(23,32,42,.07); }
     .inspector h2 { margin:0 0 4px; font-size:16px; }
     .inspector-note { margin:0 0 13px; color:var(--muted); font-size:11px; line-height:1.4; }
@@ -86,16 +102,21 @@
       <div><p class="eyebrow">B1 pipeline / Editor</p><h1>Steps A1 to A6</h1></div>
       <div class="legend" aria-label="Legend"><span><i class="dot file"></i> File or data</span><span><i class="dot"></i> Agent</span><span><i class="dot deterministic"></i> Deterministic step</span></div>
     </header>
+    <div class="graph-file-controls">
+      <button id="open-graph" type="button">Open JSON</button>
+      <button id="default-graph" type="button" hidden>Use default graph</button>
+      <span id="graph-file-name">Server graph</span>
+    </div>
     <div class="top-controls">
       <section class="root-explorer" aria-label="File root">
         <label for="file-root">File root</label><input id="file-root" type="text" value="/home/manuel/Documents/ehLang" autocomplete="off" spellcheck="false"><button id="browse-root" type="button">Browse</button><input id="folder-picker" type="file" webkitdirectory multiple hidden>
       </section>
       <nav class="editor-toolbar" aria-label="Graph editing tools">
-        <button id="undo" type="button" title="Undo" disabled>Undo</button><button id="redo" type="button" title="Redo" disabled>Redo</button><button id="zoom-reset" type="button" title="Fit all nodes in the canvas">Reset zoom</button><span class="zoom-value" id="zoom-value">100%</span><button id="add-node" type="button" title="Add a node">+ Node</button><button id="connect-edge" type="button" title="Connect two nodes" aria-pressed="false">+ Arrow</button><button id="delete-node" class="danger" type="button" title="Delete the selection" disabled>Delete</button><button id="save-graph" class="primary" type="button" title="Save the pipeline">Save</button><span class="save-state" id="save-state" aria-live="polite">Loading...</span>
+        <button id="undo" type="button" title="Undo" disabled>Undo</button><button id="redo" type="button" title="Redo" disabled>Redo</button><button id="zoom-reset" type="button" title="Fit all nodes in the canvas">Reset zoom</button><button id="preview-toggle" type="button" title="Show the graph full screen">Preview</button><span class="zoom-value" id="zoom-value">100%</span><div class="canvas-size-controls" aria-label="Canvas dimensions"><label for="canvas-width">W</label><input id="canvas-width" type="number" min="400" max="100000" step="1" inputmode="numeric" title="Canvas width"><label for="canvas-height">H</label><input id="canvas-height" type="number" min="300" max="100000" step="1" inputmode="numeric" title="Canvas height"></div><span class="canvas-size-current" id="canvas-size-current" aria-live="polite">— × —</span><button id="add-node" type="button" title="Add a node">+ Node</button><button id="connect-edge" type="button" title="Connect two nodes" aria-pressed="false">+ Arrow</button><button id="delete-node" class="danger" type="button" title="Delete the selection" disabled>Delete</button><button id="save-graph" class="primary" type="button" title="Save the pipeline">Save</button><span class="save-state" id="save-state" aria-live="polite">Loading...</span>
       </nav>
     </div>
     <div class="workspace">
-      <div class="pipeline-shell" id="pipeline-shell"><div class="canvas-stage" id="canvas-stage"><section class="pipeline" id="pipeline" aria-label="Editable B1 pipeline graph"><svg class="flow-lines" id="flow-lines" aria-hidden="true"></svg><div class="edge-label-layer" id="edge-label-layer"></div><div class="node-layer" id="node-layer"></div></section></div></div>
+      <div class="pipeline-shell" id="pipeline-shell"><div class="canvas-stage" id="canvas-stage"><section class="pipeline" id="pipeline" aria-label="Editable B1 pipeline graph"><svg class="flow-lines" id="flow-lines" aria-hidden="true"></svg><div class="edge-label-layer" id="edge-label-layer"></div><div class="node-layer" id="node-layer"></div><div class="selection-box" id="selection-box" hidden></div></section></div></div>
       <aside class="inspector" aria-label="Selected node properties">
         <h2 id="inspector-title">Properties</h2><p class="inspector-note" id="inspector-note">Select a node or arrow to edit it.</p><p class="inspector-empty" id="inspector-empty">No selection.</p>
         <div class="fields" id="inspector-fields" hidden>
@@ -109,78 +130,191 @@
         <div class="fields" id="edge-fields" hidden>
           <p class="inspector-note" id="edge-endpoints"></p>
           <div class="field"><label for="edge-label">Label</label><input id="edge-label" type="text" maxlength="200"></div>
+          <div class="field-row"><div class="field"><label for="edge-source-anchor">Starts at</label><select id="edge-source-anchor"><option value="top">Top right</option><option value="middle">Middle right</option><option value="bottom">Bottom right</option></select></div><div class="field"><label for="edge-target-anchor">Ends at</label><select id="edge-target-anchor"><option value="top">Top left</option><option value="middle">Middle left</option><option value="bottom">Bottom left</option></select></div></div>
           <div class="field-row"><div class="field"><label for="edge-style">Style</label><select id="edge-style"><option value="solid">Solid</option><option value="dashed">Dashed</option></select></div><div class="field"><label for="edge-color">Color</label><input id="edge-color" type="color"></div></div>
         </div>
-        <p class="root-status" id="root-status" aria-live="polite">Using the default absolute root</p>
+        <p class="inspector-note">Drag on the background to select several nodes; Shift + drag pans. Ctrl+C / Ctrl+V copies and pastes the selection.</p><p class="root-status" id="root-status" aria-live="polite">Using the default absolute root</p>
       </aside>
     </div>
     <footer>Source: <a href="file:///home/manuel/Documents/meetings_notes/261002_example_exec.md" target="_blank" rel="noopener">261002_example_exec.md</a></footer>
   </main>
+  <button id="preview-exit" type="button" title="Exit preview mode">Exit preview</button>
   <script>
     (() => {
       "use strict";
       const API_PATH="/api/pipeline", defaultRoot="/home/manuel/Documents/ehLang";
-      const pipeline=document.getElementById("pipeline"), shell=document.getElementById("pipeline-shell"), canvasStage=document.getElementById("canvas-stage"), svg=document.getElementById("flow-lines"), nodeLayer=document.getElementById("node-layer"), edgeLabelLayer=document.getElementById("edge-label-layer"), saveState=document.getElementById("save-state"), saveButton=document.getElementById("save-graph"), addButton=document.getElementById("add-node"), connectButton=document.getElementById("connect-edge"), deleteButton=document.getElementById("delete-node"), undoButton=document.getElementById("undo"), redoButton=document.getElementById("redo"), zoomResetButton=document.getElementById("zoom-reset"), zoomValue=document.getElementById("zoom-value"), rootInput=document.getElementById("file-root"), browseButton=document.getElementById("browse-root"), folderPicker=document.getElementById("folder-picker"), rootStatus=document.getElementById("root-status"), inspectorTitle=document.getElementById("inspector-title"), inspectorNote=document.getElementById("inspector-note"), inspectorEmpty=document.getElementById("inspector-empty"), inspectorFields=document.getElementById("inspector-fields"), edgeFields=document.getElementById("edge-fields"), edgeEndpoints=document.getElementById("edge-endpoints");
+      const openGraphButton=document.getElementById("open-graph"), defaultGraphButton=document.getElementById("default-graph"), graphFileName=document.getElementById("graph-file-name");
+      const pipeline=document.getElementById("pipeline"), shell=document.getElementById("pipeline-shell"), canvasStage=document.getElementById("canvas-stage"), svg=document.getElementById("flow-lines"), nodeLayer=document.getElementById("node-layer"), edgeLabelLayer=document.getElementById("edge-label-layer"), saveState=document.getElementById("save-state"), selectionBox=document.getElementById("selection-box"), saveButton=document.getElementById("save-graph"), addButton=document.getElementById("add-node"), connectButton=document.getElementById("connect-edge"), deleteButton=document.getElementById("delete-node"), undoButton=document.getElementById("undo"), redoButton=document.getElementById("redo"), zoomResetButton=document.getElementById("zoom-reset"), previewToggle=document.getElementById("preview-toggle"), previewExit=document.getElementById("preview-exit"), zoomValue=document.getElementById("zoom-value"), canvasWidthInput=document.getElementById("canvas-width"), canvasHeightInput=document.getElementById("canvas-height"), canvasSizeCurrent=document.getElementById("canvas-size-current"), rootInput=document.getElementById("file-root"), browseButton=document.getElementById("browse-root"), folderPicker=document.getElementById("folder-picker"), rootStatus=document.getElementById("root-status"), inspectorTitle=document.getElementById("inspector-title"), inspectorNote=document.getElementById("inspector-note"), inspectorEmpty=document.getElementById("inspector-empty"), inspectorFields=document.getElementById("inspector-fields"), edgeFields=document.getElementById("edge-fields"), edgeEndpoints=document.getElementById("edge-endpoints");
       const fields={title:document.getElementById("node-title"),kind:document.getElementById("node-kind"),color:document.getElementById("node-color"),role:document.getElementById("node-role"),path:document.getElementById("node-path"),description:document.getElementById("node-description"),details:document.getElementById("node-details")};
-      const edgeControls={label:document.getElementById("edge-label"),style:document.getElementById("edge-style"),color:document.getElementById("edge-color")};
-      let graph=null, selectedNodeId=null, selectedEdgeId=null, connectionSourceId=null, drag=null, dirty=false, connectMode=false, zoom=1;
+      const edgeControls={label:document.getElementById("edge-label"),sourceAnchor:document.getElementById("edge-source-anchor"),targetAnchor:document.getElementById("edge-target-anchor"),style:document.getElementById("edge-style"),color:document.getElementById("edge-color")};
+      let graph=null, selectedNodeId=null, selectedEdgeId=null, connectionSourceId=null, drag=null, pan=null, dirty=false, connectMode=false, zoom=1, multiIds=new Set(), marquee=null, clipboard=null, pasteCount=0, suppressClick=false, graphFileHandle=null, graphFile=null, serverGraphToken=null;
       const history=[], future=[];
       const selectedFiles=new Map();
       const text=(tag,className,value)=>{const element=document.createElement(tag);if(className)element.className=className;element.textContent=value;return element};
+      const html=(tag,className,value)=>{const element=document.createElement(tag);if(className)element.className=className;element.innerHTML=value;return element};
       const svgElement=(name,attributes={})=>{const element=document.createElementNS("http://www.w3.org/2000/svg",name);Object.entries(attributes).forEach(([key,value])=>element.setAttribute(key,String(value)));return element};
       const normalizeRoot=value=>value.trim().replace(/\\/g,"/").replace(/\/+$/,"");
       const buildFileUrl=(root,path)=>{const base=normalizeRoot(root),suffix=path?"/"+path:"";if(base.startsWith("file://"))return encodeURI(base+suffix);return encodeURI((base.startsWith("/")?"file://":"file:///")+base+suffix)};
       const selectedNode=()=>graph?.nodes.find(node=>node.id===selectedNodeId)||null;
       const selectedEdge=()=>graph?.edges.find(edge=>edge.id===selectedEdgeId)||null;
+      const isSelected=id=>id===selectedNodeId||multiIds.has(id);
       const setSaveState=(message,isError=false)=>{saveState.textContent=message;saveState.style.color=isError?"var(--danger)":""};
       const markDirty=()=>{dirty=true;setSaveState("Unsaved")};
       const isOutput=node=>/^Output\b/i.test(node.role);
       const snapshot=()=>JSON.stringify(graph);
       function updateHistoryButtons(){undoButton.disabled=!history.length;redoButton.disabled=!future.length}
       function pushHistory(value=snapshot()){history.push(value);if(history.length>50)history.shift();future.length=0;updateHistoryButtons()}
-      function restoreGraph(source,destination){if(!source.length)return;destination.push(snapshot());graph=JSON.parse(source.pop());selectedNodeId=null;selectedEdgeId=null;cancelConnection(false);markDirty();renderGraph();updateHistoryButtons()}
+      function restoreGraph(source,destination){if(!source.length)return;destination.push(snapshot());graph=JSON.parse(source.pop());selectedNodeId=null;selectedEdgeId=null;multiIds.clear();cancelConnection(false);markDirty();renderGraph();updateHistoryButtons()}
 
       async function openNodeFile(node){if(!node.path)return;const file=selectedFiles.get(node.path);if(file){const url=URL.createObjectURL(file);window.open(url,"_blank","noopener");window.setTimeout(()=>URL.revokeObjectURL(url),60000);return}setSaveState("Opening file...");try{const response=await fetch("/api/open-file",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({root:normalizeRoot(rootInput.value),path:node.path})}),payload=await response.json();if(!response.ok)throw new Error(payload.error||"Could not open file.");setSaveState("File opened")}catch(error){setSaveState(error.message,true)}}
+      function attachResizeHandle(element){
+        const resizeHandle=document.createElement("span");
+        resizeHandle.className="node-resize-handle";
+        resizeHandle.setAttribute("role","button");
+        resizeHandle.setAttribute("aria-label","Resize node");
+        resizeHandle.addEventListener("pointerdown",startResize);
+        element.append(resizeHandle);
+      }
       function makeNode(node){
-        const element=document.createElement("article");element.className="node"+(node.id===selectedNodeId?" selected":"")+(node.id===connectionSourceId?" connection-source":"")+(isOutput(node)?" output":"");element.dataset.id=node.id;element.dataset.kind=node.kind;element.style.left=node.x+"px";element.style.top=node.y+"px";element.style.width=node.width+"px";element.style.setProperty("--node-color",node.color);
-        element.append(text("span","kind",node.role||node.kind),text(node.kind==="agent"||node.kind==="deterministic"?"h2":"h3","",node.title));
-        if(node.description)element.append(text("p","",node.description));if(node.path)element.append(text("code","filename",node.path));
-        if(node.details.length){const list=document.createElement("ul");list.className="details";node.details.forEach(detail=>list.append(text("li","",detail)));element.append(list)}
+        const element=document.createElement("article");element.className="node"+(isSelected(node.id)?" selected":"")+(node.id===connectionSourceId?" connection-source":"")+(isOutput(node)?" output":"");element.dataset.id=node.id;element.dataset.kind=node.kind;element.style.left=node.x+"px";element.style.top=node.y+"px";element.style.width=node.width+"px";element.style.setProperty("--node-color",node.color);
+        if(node.height!=null)element.style.height=node.height+"px";
+        element.append(text("span","kind",node.role||node.kind),html(node.kind==="agent"||node.kind==="deterministic"?"h2":"h3","",node.title));
+        if(node.description)element.append(html("p","",node.description));if(node.path)element.append(text("code","filename",node.path));
+        if(node.details.length){const list=document.createElement("ul");list.className="details";node.details.forEach(detail=>list.append(html("li","",detail)));element.append(list)}
         if(node.path){const open=text("button","open-file","Open file");open.type="button";open.title="Open "+node.path;open.addEventListener("pointerdown",event=>event.stopPropagation());open.addEventListener("click",event=>{event.stopPropagation();openNodeFile(node)});element.append(open)}
-        element.addEventListener("click",()=>connectMode?handleConnection(node.id):selectNode(node.id));element.addEventListener("pointerdown",startDrag);return element;
+        if(node.id===selectedNodeId)attachResizeHandle(element);
+        element.addEventListener("click",()=>{if(suppressClick){suppressClick=false;return}connectMode?handleConnection(node.id):selectNode(node.id)});element.addEventListener("pointerdown",startDrag);return element;
       }
       function renderNodes(){nodeLayer.replaceChildren(...graph.nodes.map(makeNode));window.requestAnimationFrame(renderEdges)}
       function renderEdges(){
         if(!graph)return;svg.setAttribute("viewBox",`0 0 ${graph.canvas.width} ${graph.canvas.height}`);const defs=svgElement("defs"),marker=svgElement("marker",{id:"arrow",markerWidth:9,markerHeight:9,refX:8,refY:4.5,orient:"auto"});marker.append(svgElement("path",{d:"M0,0 L9,4.5 L0,9 Z",fill:"#75838e"}));defs.append(marker);const paths=[defs],labels=[],byId=new Map(graph.nodes.map(node=>[node.id,node]));
-        graph.edges.forEach(edge=>{const source=byId.get(edge.source),target=byId.get(edge.target),sourceElement=nodeLayer.querySelector(`[data-id="${CSS.escape(edge.source)}"]`),targetElement=nodeLayer.querySelector(`[data-id="${CSS.escape(edge.target)}"]`);if(!source||!target||!sourceElement||!targetElement)return;const leftToRight=source.x<=target.x,sx=leftToRight?source.x+source.width:source.x,tx=leftToRight?target.x:target.x+target.width,sy=source.y+sourceElement.offsetHeight/2,ty=target.y+targetElement.offsetHeight/2,curve=Math.max(70,Math.abs(tx-sx)*.45),direction=leftToRight?1:-1,pathData=`M${sx} ${sy} C${sx+curve*direction} ${sy}, ${tx-curve*direction} ${ty}, ${tx} ${ty}`,path=svgElement("path",{d:pathData,stroke:edge.color,"marker-end":"url(#arrow)"}),hit=svgElement("path",{d:pathData,class:"edge-hit"});if(edge.style==="dashed")path.classList.add("dashed");if(edge.id===selectedEdgeId)path.classList.add("edge-selected");hit.addEventListener("click",event=>{event.stopPropagation();selectEdge(edge.id)});paths.push(path,hit);if(edge.label){const label=text("span","edge-label",edge.label);label.style.left=(sx+tx)/2+"px";label.style.top=(sy+ty)/2+"px";labels.push(label)}});svg.replaceChildren(...paths);edgeLabelLayer.replaceChildren(...labels);
+        graph.edges.forEach(edge=>{const source=byId.get(edge.source),target=byId.get(edge.target),sourceElement=nodeLayer.querySelector(`[data-id="${CSS.escape(edge.source)}"]`),targetElement=nodeLayer.querySelector(`[data-id="${CSS.escape(edge.target)}"]`);if(!source||!target||!sourceElement||!targetElement)return;const sx=source.x+source.width,tx=target.x,sourceAnchor=edge.source_anchor||"middle",targetAnchor=edge.target_anchor||"middle",anchorOffset=(anchor,height)=>anchor==="top"?0:anchor==="bottom"?height:height/2,sy=source.y+anchorOffset(sourceAnchor,sourceElement.offsetHeight),ty=target.y+anchorOffset(targetAnchor,targetElement.offsetHeight),curve=Math.max(70,Math.abs(tx-sx)*.45),sourceControl=sx+curve,targetControl=tx-curve,pathData=`M${sx} ${sy} C${sourceControl} ${sy}, ${targetControl} ${ty}, ${tx} ${ty}`,path=svgElement("path",{d:pathData,stroke:edge.color,"marker-end":"url(#arrow)"}),hit=svgElement("path",{d:pathData,class:"edge-hit"});if(edge.style==="dashed")path.classList.add("dashed");if(edge.id===selectedEdgeId)path.classList.add("edge-selected");hit.addEventListener("click",event=>{event.stopPropagation();selectEdge(edge.id)});paths.push(path,hit);if(edge.label){const label=html("span","edge-label",edge.label);label.style.left=(sx+tx)/2+"px";label.style.top=(sy+ty)/2+"px";labels.push(label)}});svg.replaceChildren(...paths);edgeLabelLayer.replaceChildren(...labels);
       }
-      function renderInspector(){const node=selectedNode(),edge=selectedEdge();inspectorEmpty.hidden=Boolean(node||edge);inspectorFields.hidden=!node;edgeFields.hidden=!edge;deleteButton.disabled=!(node||edge);if(node){inspectorTitle.textContent="Node properties";inspectorNote.textContent="Drag the selected node directly on the canvas.";fields.title.value=node.title;fields.kind.value=node.kind;fields.color.value=node.color;fields.role.value=node.role;fields.path.value=node.path;fields.description.value=node.description;fields.details.value=node.details.join("\n")}else if(edge){inspectorTitle.textContent="Arrow properties";inspectorNote.textContent="Edit the selected arrow or delete it.";edgeEndpoints.textContent=`${edge.source} to ${edge.target}`;edgeControls.label.value=edge.label;edgeControls.style.value=edge.style;edgeControls.color.value=edge.color}else{inspectorTitle.textContent="Properties";inspectorNote.textContent="Select a node or arrow to edit it."}}
-      function selectNode(id){selectedNodeId=id;selectedEdgeId=null;nodeLayer.querySelectorAll(".node").forEach(element=>element.classList.toggle("selected",element.dataset.id===id));renderEdges();renderInspector()}
-      function selectEdge(id){selectedEdgeId=id;selectedNodeId=null;nodeLayer.querySelectorAll(".node").forEach(element=>element.classList.remove("selected"));renderEdges();renderInspector()}
+      function renderInspector(){const node=selectedNode(),edge=selectedEdge();const multi=multiIds.size>1;inspectorEmpty.hidden=Boolean(node||edge||multi);inspectorFields.hidden=!node;edgeFields.hidden=!edge;deleteButton.disabled=!(node||edge||multi);if(multi){inspectorTitle.textContent="Multiple selection";inspectorNote.textContent=multiIds.size+" nodes selected. Drag any of them to move the group; Ctrl+C / Ctrl+V copies them."}else if(node){inspectorTitle.textContent="Node properties";inspectorNote.textContent="Drag the selected node directly on the canvas.";fields.title.value=node.title;fields.kind.value=node.kind;fields.color.value=node.color;fields.role.value=node.role;fields.path.value=node.path;fields.description.value=node.description;fields.details.value=node.details.join("\n")}else if(edge){inspectorTitle.textContent="Arrow properties";inspectorNote.textContent="Edit the selected arrow or delete it.";edgeEndpoints.textContent=`${edge.source} to ${edge.target}`;edgeControls.label.value=edge.label;edgeControls.sourceAnchor.value=edge.source_anchor||"middle";edgeControls.targetAnchor.value=edge.target_anchor||"middle";edgeControls.style.value=edge.style;edgeControls.color.value=edge.color}else{inspectorTitle.textContent="Properties";inspectorNote.textContent="Select a node or arrow to edit it."}}
+      function selectNode(id){selectedNodeId=id;selectedEdgeId=null;multiIds.clear();nodeLayer.querySelectorAll(".node").forEach(element=>{const selected=element.dataset.id===id;element.classList.toggle("selected",selected);if(selected){if(!element.querySelector(".node-resize-handle"))attachResizeHandle(element)}else{element.querySelector(".node-resize-handle")?.remove()}});renderEdges();renderInspector()}
+      function selectEdge(id){selectedEdgeId=id;selectedNodeId=null;multiIds.clear();nodeLayer.querySelectorAll(".node").forEach(element=>{element.classList.remove("selected");element.querySelector(".node-resize-handle")?.remove()});renderEdges();renderInspector()}
       function setZoom(value){zoom=Math.max(.1,Math.min(2.5,value));pipeline.style.transform=`scale(${zoom})`;canvasStage.style.width=graph.canvas.width*zoom+"px";canvasStage.style.height=graph.canvas.height*zoom+"px";zoomValue.textContent=Math.round(zoom*100)+"%"}
       function zoomAround(value,clientX,clientY){const rect=shell.getBoundingClientRect(),anchorX=clientX-rect.left,anchorY=clientY-rect.top,graphX=(shell.scrollLeft+anchorX)/zoom,graphY=(shell.scrollTop+anchorY)/zoom;setZoom(value);shell.scrollLeft=graphX*zoom-anchorX;shell.scrollTop=graphY*zoom-anchorY}
-      function fitAllNodes(){if(!graph?.nodes.length)return;const elements=new Map([...nodeLayer.querySelectorAll(".node")].map(element=>[element.dataset.id,element])),padding=40,minX=Math.min(...graph.nodes.map(node=>node.x)),minY=Math.min(...graph.nodes.map(node=>node.y)),maxX=Math.max(...graph.nodes.map(node=>node.x+node.width)),maxY=Math.max(...graph.nodes.map(node=>node.y+(elements.get(node.id)?.offsetHeight||120))),width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY),nextZoom=Math.min(1,(shell.clientWidth-padding*2)/width,(shell.clientHeight-padding*2)/height);setZoom(nextZoom);shell.scrollLeft=Math.max(0,minX*zoom-padding);shell.scrollTop=Math.max(0,minY*zoom-padding)}
-      function renderGraph(){pipeline.style.width=graph.canvas.width+"px";pipeline.style.height=graph.canvas.height+"px";setZoom(zoom);renderNodes();renderInspector()}
-      function startDrag(event){if(connectMode||event.button!==0||event.target.closest("button"))return;const element=event.currentTarget,node=graph.nodes.find(item=>item.id===element.dataset.id);if(!node)return;selectNode(node.id);drag={node,element,pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,nodeX:node.x,nodeY:node.y,moved:false,before:snapshot()};element.setPointerCapture(event.pointerId);element.classList.add("dragging");element.addEventListener("pointermove",moveDrag);element.addEventListener("pointerup",endDrag);element.addEventListener("pointercancel",endDrag);event.preventDefault()}
-      function moveDrag(event){if(!drag||event.pointerId!==drag.pointerId)return;const dx=(event.clientX-drag.startX)/zoom,dy=(event.clientY-drag.startY)/zoom;if(Math.abs(dx)+Math.abs(dy)>2)drag.moved=true;drag.node.x=Math.round(Math.max(0,Math.min(graph.canvas.width-drag.node.width,drag.nodeX+dx)));drag.node.y=Math.round(Math.max(0,Math.min(graph.canvas.height-drag.element.offsetHeight,drag.nodeY+dy)));drag.element.style.left=drag.node.x+"px";drag.element.style.top=drag.node.y+"px";renderEdges()}
-      function endDrag(event){if(!drag||event.pointerId!==drag.pointerId)return;drag.element.classList.remove("dragging");drag.element.removeEventListener("pointermove",moveDrag);drag.element.removeEventListener("pointerup",endDrag);drag.element.removeEventListener("pointercancel",endDrag);if(drag.moved){pushHistory(drag.before);markDirty()}drag=null}
+      function fitAllNodes(maximumZoom=1){if(!graph?.nodes.length)return;const elements=new Map([...nodeLayer.querySelectorAll(".node")].map(element=>[element.dataset.id,element])),padding=40,minX=Math.min(...graph.nodes.map(node=>node.x)),minY=Math.min(...graph.nodes.map(node=>node.y)),maxX=Math.max(...graph.nodes.map(node=>node.x+node.width)),maxY=Math.max(...graph.nodes.map(node=>node.y+(elements.get(node.id)?.offsetHeight||120))),width=Math.max(1,maxX-minX),height=Math.max(1,maxY-minY),nextZoom=Math.min(maximumZoom,(shell.clientWidth-padding*2)/width,(shell.clientHeight-padding*2)/height);setZoom(nextZoom);shell.scrollLeft=Math.max(0,minX*zoom-Math.max(padding,(shell.clientWidth-width*zoom)/2));shell.scrollTop=Math.max(0,minY*zoom-Math.max(padding,(shell.clientHeight-height*zoom)/2))}
+      function setPreviewMode(enabled){document.body.classList.toggle("preview-mode",enabled);previewToggle.setAttribute("aria-pressed",String(enabled));previewToggle.textContent=enabled?"Edit":"Preview";if(enabled){selectedNodeId=null;selectedEdgeId=null;multiIds.clear();cancelConnection(false);window.requestAnimationFrame(()=>{renderNodes();window.requestAnimationFrame(()=>fitAllNodes(2.5))})}else{setZoom(zoom);renderGraph()}}
+      function renderGraph(){pipeline.style.width=graph.canvas.width+"px";pipeline.style.height=graph.canvas.height+"px";canvasWidthInput.value=graph.canvas.width;canvasHeightInput.value=graph.canvas.height;canvasSizeCurrent.textContent=`${graph.canvas.width} × ${graph.canvas.height}`;setZoom(zoom);renderNodes();renderInspector()}
+      function startDrag(event){if(connectMode||event.button!==0||event.target.closest("button"))return;const element=event.currentTarget,node=graph.nodes.find(item=>item.id===element.dataset.id);if(!node)return;const group=multiIds.size>1&&multiIds.has(node.id);if(!group)selectNode(node.id);const members=group?graph.nodes.filter(item=>multiIds.has(item.id)).map(item=>({node:item,element:nodeLayer.querySelector(`[data-id="${CSS.escape(item.id)}"]`),x:item.x,y:item.y})):[{node,element,x:node.x,y:node.y}];drag={node,element,members,pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,moved:false,before:snapshot()};element.setPointerCapture(event.pointerId);members.forEach(member=>member.element?.classList.add("dragging"));element.addEventListener("pointermove",moveDrag);element.addEventListener("pointerup",endDrag);element.addEventListener("pointercancel",endDrag);event.preventDefault()}
+      function moveDrag(event){if(!drag||event.pointerId!==drag.pointerId)return;let dx=(event.clientX-drag.startX)/zoom,dy=(event.clientY-drag.startY)/zoom;if(Math.abs(dx)+Math.abs(dy)>2)drag.moved=true;const bounds={minX:-Math.min(...drag.members.map(member=>member.x)),minY:-Math.min(...drag.members.map(member=>member.y)),maxX:Math.min(...drag.members.map(member=>graph.canvas.width-member.node.width-member.x)),maxY:Math.min(...drag.members.map(member=>graph.canvas.height-(member.element?.offsetHeight||0)-member.y))};dx=Math.round(Math.max(bounds.minX,Math.min(bounds.maxX,dx)));dy=Math.round(Math.max(bounds.minY,Math.min(bounds.maxY,dy)));drag.members.forEach(member=>{member.node.x=member.x+dx;member.node.y=member.y+dy;if(member.element){member.element.style.left=member.node.x+"px";member.element.style.top=member.node.y+"px"}});renderEdges()}
+      function endDrag(event){if(!drag||event.pointerId!==drag.pointerId)return;drag.members.forEach(member=>member.element?.classList.remove("dragging"));drag.element.removeEventListener("pointermove",moveDrag);drag.element.removeEventListener("pointerup",endDrag);drag.element.removeEventListener("pointercancel",endDrag);if(drag.moved){pushHistory(drag.before);markDirty();if(multiIds.size>1)suppressClick=true}drag=null}
+      function startResize(event){if(connectMode||event.button!==0)return;event.stopPropagation();const handle=event.currentTarget,element=handle.parentElement,node=graph.nodes.find(item=>item.id===element.dataset.id);if(!node)return;selectNode(node.id);drag={node,element,pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,nodeWidth:node.width,nodeHeight:element.offsetHeight,moved:false,before:snapshot(),resizing:true};handle.setPointerCapture(event.pointerId);handle.addEventListener("pointermove",moveResize);handle.addEventListener("pointerup",endResize);handle.addEventListener("pointercancel",endResize);event.preventDefault()}
+      function moveResize(event){if(!drag?.resizing||event.pointerId!==drag.pointerId)return;const width=Math.round(Math.max(80,Math.min(graph.canvas.width-drag.node.x,drag.nodeWidth+(event.clientX-drag.startX)/zoom))),height=Math.round(Math.max(68,Math.min(graph.canvas.height-drag.node.y,drag.nodeHeight+(event.clientY-drag.startY)/zoom)));if(width!==drag.node.width||height!==drag.node.height)drag.moved=true;drag.node.width=width;drag.node.height=height;drag.element.style.width=width+"px";drag.element.style.height=height+"px";renderEdges()}
+      function endResize(event){if(!drag?.resizing||event.pointerId!==drag.pointerId)return;const handle=event.currentTarget;handle.removeEventListener("pointermove",moveResize);handle.removeEventListener("pointerup",endResize);handle.removeEventListener("pointercancel",endResize);if(drag.moved){pushHistory(drag.before);markDirty()}drag=null}
+      function startPan(event){if(event.button!==0||event.target.closest(".node,.edge-hit,button,input,select,textarea"))return;if(event.shiftKey){pan={pointerId:event.pointerId,startX:event.clientX,startY:event.clientY,scrollLeft:shell.scrollLeft,scrollTop:shell.scrollTop};shell.setPointerCapture(event.pointerId);shell.classList.add("panning");event.preventDefault();return}if(connectMode||!graph)return;const point=canvasPoint(event);marquee={pointerId:event.pointerId,startX:point.x,startY:point.y,x:point.x,y:point.y};shell.setPointerCapture(event.pointerId);event.preventDefault()}
+      function canvasPoint(event){const rect=pipeline.getBoundingClientRect();return{x:(event.clientX-rect.left)/zoom,y:(event.clientY-rect.top)/zoom}}
+      function marqueeRect(){return{left:Math.min(marquee.startX,marquee.x),right:Math.max(marquee.startX,marquee.x),top:Math.min(marquee.startY,marquee.y),bottom:Math.max(marquee.startY,marquee.y)}}
+      function drawSelectionBox(){if(!marquee){selectionBox.hidden=true;return}const box=marqueeRect();selectionBox.style.left=box.left+"px";selectionBox.style.top=box.top+"px";selectionBox.style.width=box.right-box.left+"px";selectionBox.style.height=box.bottom-box.top+"px";selectionBox.hidden=false}
+      function finishMarquee(){const box=marqueeRect(),dragged=box.right-box.left>4||box.bottom-box.top>4;marquee=null;drawSelectionBox();selectedEdgeId=null;const ids=dragged?graph.nodes.filter(node=>{const height=nodeLayer.querySelector(`[data-id="${CSS.escape(node.id)}"]`)?.offsetHeight||120;return node.x<=box.right&&node.x+node.width>=box.left&&node.y<=box.bottom&&node.y+height>=box.top}).map(node=>node.id):[];if(ids.length===1){selectNode(ids[0]);return}selectedNodeId=null;multiIds.clear();ids.forEach(id=>multiIds.add(id));renderNodes();renderInspector()}
+      function movePan(event){if(marquee&&event.pointerId===marquee.pointerId){const point=canvasPoint(event);marquee.x=point.x;marquee.y=point.y;drawSelectionBox();return}if(!pan||event.pointerId!==pan.pointerId)return;shell.scrollLeft=pan.scrollLeft-(event.clientX-pan.startX);shell.scrollTop=pan.scrollTop-(event.clientY-pan.startY)}
+      function endPan(event){if(marquee&&event.pointerId===marquee.pointerId){if(shell.hasPointerCapture(event.pointerId))shell.releasePointerCapture(event.pointerId);finishMarquee();return}if(!pan||event.pointerId!==pan.pointerId)return;if(shell.hasPointerCapture(event.pointerId))shell.releasePointerCapture(event.pointerId);shell.classList.remove("panning");pan=null}
+      shell.addEventListener("pointerdown",startPan);shell.addEventListener("pointermove",movePan);shell.addEventListener("pointerup",endPan);shell.addEventListener("pointercancel",endPan);
       function updateSelected(property,value){const node=selectedNode();if(!node)return;pushHistory();node[property]=value;markDirty();renderNodes()}
       function updateSelectedEdge(property,value){const edge=selectedEdge();if(!edge)return;pushHistory();edge[property]=value;markDirty();renderEdges()}
       fields.title.addEventListener("input",()=>updateSelected("title",fields.title.value));fields.kind.addEventListener("change",()=>updateSelected("kind",fields.kind.value));fields.color.addEventListener("input",()=>updateSelected("color",fields.color.value));fields.role.addEventListener("input",()=>updateSelected("role",fields.role.value));fields.path.addEventListener("input",()=>updateSelected("path",fields.path.value));fields.description.addEventListener("input",()=>updateSelected("description",fields.description.value));fields.details.addEventListener("input",()=>updateSelected("details",fields.details.value.split("\n").map(item=>item.trim()).filter(Boolean)));
-      edgeControls.label.addEventListener("input",()=>updateSelectedEdge("label",edgeControls.label.value));edgeControls.style.addEventListener("change",()=>updateSelectedEdge("style",edgeControls.style.value));edgeControls.color.addEventListener("input",()=>updateSelectedEdge("color",edgeControls.color.value));
+      edgeControls.label.addEventListener("input",()=>updateSelectedEdge("label",edgeControls.label.value));edgeControls.sourceAnchor.addEventListener("change",()=>updateSelectedEdge("source_anchor",edgeControls.sourceAnchor.value));edgeControls.targetAnchor.addEventListener("change",()=>updateSelectedEdge("target_anchor",edgeControls.targetAnchor.value));edgeControls.style.addEventListener("change",()=>updateSelectedEdge("style",edgeControls.style.value));edgeControls.color.addEventListener("input",()=>updateSelectedEdge("color",edgeControls.color.value));
+      function updateCanvasSize(property,input,minimum){const value=Number(input.value);if(!Number.isFinite(value)||value<minimum||value>100000){input.value=graph.canvas[property];setSaveState(`Canvas ${property} must be between ${minimum} and 100000.`,true);return}if(value===graph.canvas[property])return;pushHistory();graph.canvas[property]=value;markDirty();renderGraph()}
+      canvasWidthInput.addEventListener("change",()=>updateCanvasSize("width",canvasWidthInput,400));canvasHeightInput.addEventListener("change",()=>updateCanvasSize("height",canvasHeightInput,300));
       undoButton.addEventListener("click",()=>restoreGraph(history,future));redoButton.addEventListener("click",()=>restoreGraph(future,history));
       zoomResetButton.addEventListener("click",fitAllNodes);shell.addEventListener("wheel",event=>{if(!event.ctrlKey||!graph)return;event.preventDefault();zoomAround(zoom*(event.deltaY<0?1.12:.89),event.clientX,event.clientY)},{passive:false});
+      previewToggle.addEventListener("click",()=>setPreviewMode(!document.body.classList.contains("preview-mode")));previewExit.addEventListener("click",()=>setPreviewMode(false));window.addEventListener("resize",()=>{if(document.body.classList.contains("preview-mode"))window.requestAnimationFrame(()=>fitAllNodes(2.5))});document.addEventListener("keydown",event=>{if(event.key==="Escape"&&document.body.classList.contains("preview-mode"))setPreviewMode(false)});
       addButton.addEventListener("click",()=>{pushHistory();const id="node-"+Date.now().toString(36),node={id,kind:"file",title:"New node",role:"File",description:"",path:"",x:Math.min(graph.canvas.width-240,(shell.scrollLeft+60)/zoom),y:Math.min(graph.canvas.height-140,(shell.scrollTop+60)/zoom),width:240,color:"#ffffff",details:[]};graph.nodes.push(node);selectedNodeId=id;selectedEdgeId=null;markDirty();renderGraph()});
       function cancelConnection(resetStatus=true){connectMode=false;connectionSourceId=null;connectButton.setAttribute("aria-pressed","false");connectButton.textContent="+ Arrow";if(resetStatus)setSaveState(dirty?"Unsaved":"Saved");if(graph)renderNodes()}
-      function handleConnection(nodeId){if(!connectionSourceId){connectionSourceId=nodeId;setSaveState("Select target");renderNodes();return}if(connectionSourceId===nodeId){setSaveState("Choose a different target",true);return}if(graph.edges.some(edge=>edge.source===connectionSourceId&&edge.target===nodeId)){setSaveState("Arrow already exists",true);return}pushHistory();const edge={id:"edge-"+Date.now().toString(36),source:connectionSourceId,target:nodeId,label:"",color:"#91a0ad",style:"solid"};graph.edges.push(edge);selectedEdgeId=edge.id;selectedNodeId=null;markDirty();cancelConnection(false);renderGraph()}
-      connectButton.addEventListener("click",()=>{if(connectMode){cancelConnection();return}connectMode=true;selectedNodeId=null;selectedEdgeId=null;connectionSourceId=null;connectButton.setAttribute("aria-pressed","true");connectButton.textContent="Cancel arrow";setSaveState("Select source");renderGraph()});
-      function deleteSelected(){if(!selectedNodeId&&!selectedEdgeId)return;pushHistory();if(selectedNodeId){graph.nodes=graph.nodes.filter(node=>node.id!==selectedNodeId);graph.edges=graph.edges.filter(edge=>edge.source!==selectedNodeId&&edge.target!==selectedNodeId)}else{graph.edges=graph.edges.filter(edge=>edge.id!==selectedEdgeId)}selectedNodeId=null;selectedEdgeId=null;markDirty();renderGraph()}
-      deleteButton.addEventListener("click",deleteSelected);document.addEventListener("keydown",event=>{if(event.key==="Escape"&&connectMode){cancelConnection();return}if((event.key==="Delete"||event.key==="Backspace")&&(selectedNodeId||selectedEdgeId)&&!event.target.closest("input,textarea,select")){event.preventDefault();deleteSelected()}});
-      saveButton.addEventListener("click",async()=>{saveButton.disabled=true;setSaveState("Saving...");try{const response=await fetch(API_PATH,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(graph)}),payload=await response.json();if(!response.ok)throw new Error(payload.error||"Save failed.");graph=payload;dirty=false;setSaveState("Saved");renderGraph()}catch(error){setSaveState(error.message,true)}finally{saveButton.disabled=false}});
+      function handleConnection(nodeId){if(!connectionSourceId){connectionSourceId=nodeId;setSaveState("Select target");renderNodes();return}if(connectionSourceId===nodeId){setSaveState("Choose a different target",true);return}if(graph.edges.some(edge=>edge.source===connectionSourceId&&edge.target===nodeId)){setSaveState("Arrow already exists",true);return}pushHistory();const edge={id:"edge-"+Date.now().toString(36),source:connectionSourceId,target:nodeId,label:"",color:"#91a0ad",style:"solid",source_anchor:"middle",target_anchor:"middle"};graph.edges.push(edge);selectedEdgeId=edge.id;selectedNodeId=null;markDirty();cancelConnection(false);renderGraph()}
+      connectButton.addEventListener("click",()=>{if(connectMode){cancelConnection();return}connectMode=true;selectedNodeId=null;selectedEdgeId=null;multiIds.clear();connectionSourceId=null;connectButton.setAttribute("aria-pressed","true");connectButton.textContent="Cancel arrow";setSaveState("Select source");renderGraph()});
+      function deleteSelected(){if(!selectedNodeId&&!selectedEdgeId&&multiIds.size<2)return;pushHistory();if(multiIds.size>1){graph.nodes=graph.nodes.filter(node=>!multiIds.has(node.id));graph.edges=graph.edges.filter(edge=>!multiIds.has(edge.source)&&!multiIds.has(edge.target));multiIds.clear()}else if(selectedNodeId){graph.nodes=graph.nodes.filter(node=>node.id!==selectedNodeId);graph.edges=graph.edges.filter(edge=>edge.source!==selectedNodeId&&edge.target!==selectedNodeId)}else{graph.edges=graph.edges.filter(edge=>edge.id!==selectedEdgeId)}selectedNodeId=null;selectedEdgeId=null;markDirty();renderGraph()}
+      function copySelection(){const ids=multiIds.size>1?new Set(multiIds):selectedNodeId?new Set([selectedNodeId]):null;if(!ids)return;const nodes=graph.nodes.filter(node=>ids.has(node.id)).map(node=>JSON.parse(JSON.stringify(node))),edges=graph.edges.filter(edge=>ids.has(edge.source)&&ids.has(edge.target)).map(edge=>JSON.parse(JSON.stringify(edge)));clipboard={nodes,edges};pasteCount=0;setSaveState(nodes.length>1?nodes.length+" nodes copied":"Node copied")}
+      function pasteSelection(){if(!clipboard||!clipboard.nodes.length||!graph)return;pasteCount+=1;const offset=45*pasteCount,stamp=Date.now().toString(36),idMap=new Map(),pasted=[];const minX=Math.min(...clipboard.nodes.map(node=>node.x)),minY=Math.min(...clipboard.nodes.map(node=>node.y)),maxX=Math.max(...clipboard.nodes.map(node=>node.x+node.width)),shiftX=Math.max(-minX,Math.min(offset,graph.canvas.width-maxX)),shiftY=Math.max(-minY,offset);pushHistory();clipboard.nodes.forEach((source,index)=>{const node=JSON.parse(JSON.stringify(source));node.id=`node-${stamp}${pasteCount}-${index}`;idMap.set(source.id,node.id);node.x=Math.round(source.x+shiftX);node.y=Math.round(Math.min(source.y+shiftY,graph.canvas.height-60));pasted.push(node)});graph.nodes.push(...pasted);clipboard.edges.forEach((source,index)=>{const edge=JSON.parse(JSON.stringify(source));edge.id=`edge-${stamp}${pasteCount}-${index}`;edge.source=idMap.get(source.source);edge.target=idMap.get(source.target);graph.edges.push(edge)});selectedEdgeId=null;multiIds.clear();if(pasted.length===1){selectedNodeId=pasted[0].id}else{selectedNodeId=null;pasted.forEach(node=>multiIds.add(node.id))}markDirty();renderGraph();setSaveState(pasted.length>1?pasted.length+" nodes pasted":"Node pasted")}
+      document.addEventListener("keydown",event=>{if(!(event.ctrlKey||event.metaKey)||event.altKey||document.body.classList.contains("preview-mode")||event.target.closest?.("input,textarea,select"))return;const key=event.key.toLowerCase();if(key==="c"){if(!selectedNodeId&&multiIds.size<2)return;event.preventDefault();copySelection()}else if(key==="v"){if(!clipboard)return;event.preventDefault();pasteSelection()}});
+      deleteButton.addEventListener("click",deleteSelected);document.addEventListener("keydown",event=>{if(event.key==="Escape"&&connectMode){cancelConnection();return}if((event.key==="Delete"||event.key==="Backspace")&&(selectedNodeId||selectedEdgeId||multiIds.size>1)&&!event.target.closest("input,textarea,select")){event.preventDefault();deleteSelected()}});
+      async function validateGraph(payload){
+        const response=await fetch("/api/validate-pipeline",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+        const result=await response.json();
+        if(!response.ok)throw new Error(result.error||"Invalid pipeline JSON.");
+        return result;
+      }
+      async function openSelectedGraph(file,handle=null){
+        const parsed=JSON.parse(await file.text());
+        const loaded=await validateGraph(parsed);
+        graph=loaded;
+        graphFile=file;
+        graphFileHandle=handle;
+        serverGraphToken=null;
+        graphFileName.textContent=file.name;
+        defaultGraphButton.hidden=false;
+        selectedNodeId=null;
+        selectedEdgeId=null;
+        multiIds.clear();
+        history.length=0;
+        future.length=0;
+        updateHistoryButtons();
+        cancelConnection(false);
+        dirty=false;
+        setSaveState("Loaded "+file.name);
+        renderGraph();
+      }
+      async function browseServerGraph(){
+        const response=await fetch("/api/browse-pipeline",{method:"POST"});
+        const result=await response.json();
+        if(!response.ok)throw new Error(result.error||"Could not open pipeline JSON.");
+        if(result.cancelled)return;
+        graph=result.graph;
+        graphFile=null;
+        graphFileHandle=null;
+        serverGraphToken=result.token;
+        graphFileName.textContent=result.name;
+        defaultGraphButton.hidden=false;
+        selectedNodeId=null;
+        selectedEdgeId=null;
+        multiIds.clear();
+        history.length=0;
+        future.length=0;
+        updateHistoryButtons();
+        cancelConnection(false);
+        dirty=false;
+        setSaveState("Loaded "+result.name);
+        renderGraph();
+      }
+      openGraphButton.addEventListener("click",async()=>{
+        if(dirty&&!window.confirm("Discard unsaved changes and open another graph?"))return;
+        try{
+          if(!window.showOpenFilePicker){await browseServerGraph();return}
+          const [handle]=await window.showOpenFilePicker({types:[{description:"Pipeline JSON",accept:{"application/json":[".json"]}}],multiple:false});
+          await openSelectedGraph(await handle.getFile(),handle);
+        }catch(error){if(error.name!=="AbortError")setSaveState("Could not open JSON: "+error.message,true)}
+      });
+      defaultGraphButton.addEventListener("click",async()=>{
+        if(dirty&&!window.confirm("Discard unsaved changes and load the server graph?"))return;
+        await loadGraph();
+      });
+      async function saveSelectedGraph(){
+        const normalized=await validateGraph(graph);
+        const content=JSON.stringify(normalized,null,2)+"\n";
+        const writable=await graphFileHandle.createWritable();
+        try{await writable.write(content);await writable.close()}catch(error){await writable.abort();throw error}
+        graphFile=await graphFileHandle.getFile();
+        setSaveState("Saved "+graphFile.name);
+        graph=normalized;
+        dirty=false;
+        renderGraph();
+      }
+      async function saveServerGraph(){
+        const response=await fetch("/api/selected-pipeline",{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:serverGraphToken,graph})});
+        const result=await response.json();
+        if(!response.ok)throw new Error(result.error||"Could not save selected pipeline.");
+        graph=result;
+        dirty=false;
+        setSaveState("Saved "+graphFileName.textContent);
+        renderGraph();
+      }
+      saveButton.addEventListener("click",async()=>{saveButton.disabled=true;setSaveState("Saving...");try{if(serverGraphToken){await saveServerGraph();return}if(graphFile){await saveSelectedGraph();return}const graphBeforeSave=graph,response=await fetch(API_PATH,{method:"PUT",headers:{"Content-Type":"application/json"},body:JSON.stringify(graphBeforeSave)}),payload=await response.json();if(!response.ok)throw new Error(payload.error||"Save failed.");const nodesById=new Map(graphBeforeSave.nodes.map(node=>[node.id,{width:node.width,...("height" in node?{height:node.height}: {})}]));payload.nodes=payload.nodes.map(node=>({...node,...(nodesById.get(node.id)||{}),width:node.width??nodesById.get(node.id)?.width,height:node.height??nodesById.get(node.id)?.height}));const anchorsById=new Map(graphBeforeSave.edges.map(edge=>[edge.id,{source_anchor:edge.source_anchor||"middle",target_anchor:edge.target_anchor||"middle"}]));payload.edges=payload.edges.map(edge=>({...edge,...(anchorsById.get(edge.id)||{}),source_anchor:edge.source_anchor||anchorsById.get(edge.id)?.source_anchor||"middle",target_anchor:edge.target_anchor||anchorsById.get(edge.id)?.target_anchor||"middle"}));graph=payload;dirty=false;setSaveState("Saved");renderGraph()}catch(error){setSaveState(error.message,true)}finally{saveButton.disabled=false}});
       function applyRoot(value,persist=true){const root=normalizeRoot(value)||defaultRoot;rootInput.value=root;if(persist)localStorage.setItem("b1-file-root",root);selectedFiles.clear();rootStatus.textContent="Using absolute root: "+root}
       rootInput.addEventListener("change",()=>applyRoot(rootInput.value));rootInput.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();applyRoot(rootInput.value);rootInput.blur()}});browseButton.addEventListener("click",()=>folderPicker.click());folderPicker.addEventListener("change",()=>{selectedFiles.clear();const files=[...folderPicker.files];files.forEach(file=>{const parts=file.webkitRelativePath.split("/");selectedFiles.set(parts.slice(1).join("/"),file)});if(files.length){const folderName=files[0].webkitRelativePath.split("/")[0];rootStatus.textContent=`Selected folder: ${folderName} (${files.length} files)`}});
       window.addEventListener("beforeunload",event=>{if(!dirty)return;event.preventDefault();event.returnValue=""});
-      async function loadGraph(){try{const response=await fetch(API_PATH,{cache:"no-store"}),payload=await response.json();if(!response.ok)throw new Error(payload.error||"Could not load the pipeline.");graph=payload;setSaveState("Saved");renderGraph()}catch(error){setSaveState(error.message,true);nodeLayer.append(text("p","inspector-empty","The pipeline could not be loaded. Start it with python3 pipeline_web.py."))}}
+      async function loadGraph(){try{const response=await fetch(API_PATH,{cache:"no-store"}),payload=await response.json();if(!response.ok)throw new Error(payload.error||"Could not load the pipeline.");graph=payload;graphFile=null;graphFileHandle=null;serverGraphToken=null;graphFileName.textContent="Server graph";defaultGraphButton.hidden=true;selectedNodeId=null;selectedEdgeId=null;multiIds.clear();history.length=0;future.length=0;updateHistoryButtons();cancelConnection(false);dirty=false;setSaveState("Saved");renderGraph()}catch(error){setSaveState(error.message,true);if(!graph)nodeLayer.append(text("p","inspector-empty","The pipeline could not be loaded. Start it with python3 pipeline_web.py."))}}
       applyRoot(localStorage.getItem("b1-file-root")||defaultRoot,false);loadGraph();
     })();
   </script>
