@@ -1,0 +1,113 @@
+{
+  "source": "KTH MAL project publication list plus repository citations",
+  "source_url": "https://www.kth.se/nse/research/software-systems-architecture-and-security/projects/mal-the-meta-attack-language-1.922174",
+    "papers": [
+        {
+            "id": "mal-simulator-2026",
+            "title": "The MAL Simulator: Cyber Operations Simulation based on Attack & Defense Graphs",
+            "authors": [
+                "Jakob Nyberg",
+                "Sandor Berglund",
+                "Andrei Buhaiu",
+                "Joakim Loxdal",
+                "Pontus Johnson",
+                "Mathias Ekstedt"
+            ],
+            "year": 2026,
+            "arxiv": "2609.16563",
+            "source_url": "https://arxiv.org/abs/2609.16563",
+            "pdf": "mal-simulator-2026.pdf"
+        },
+        {
+            "id": "cyber-range-autonomous-response-2026",
+            "title": "A Cyber Range Evaluation of Autonomous Network Incident Response Agents",
+            "authors": [
+                "Jakob Nyberg",
+                "Teodor Sommestad",
+                "Andrei Buhaiu",
+                "Joakim Loxdal",
+                "Pontus Johnson",
+                "Mathias Ekstedt"
+            ],
+            "year": 2026,
+            "arxiv": "2609.16541",
+            "source_url": "https://arxiv.org/abs/2609.16541",
+            "pdf": "cyber-range-autonomous-response-2026.pdf"
+        },
+        {
+            "id": "bpmn-attack-simulations-2021",
+      "title": "Towards Automated Attack Simulations of BPMN-based Processes",
+      "authors": ["Simon Hacks", "Robert Lagerström", "Daniel Ritter"],
+      "year": 2021,
+      "arxiv": "2106.08568",
+      "source_url": "https://arxiv.org/abs/2106.08568",
+      "pdf": "bpmn-attack-simulations-2021.pdf"
+    },
+    {
+      "id": "gnn-hidden-states-2023",
+      "title": "Towards a Graph Neural Network-Based Approach for Estimating Hidden States in Cyber Attack Simulations",
+      "authors": ["Pontus Johnson", "Mathias Ekstedt"],
+      "year": 2023,
+      "arxiv": "2312.05666",
+      "source_url": "https://arxiv.org/abs/2312.05666",
+      "pdf": "gnn-hidden-states-2023.pdf"
+    },
+    {
+      "id": "ms17-010-mal-2024",
+      "title": "Creating a vulnerable node based on the vulnerability MS17-010",
+      "authors": ["Aleksey Novokhrestov", "Anton Kalyakin", "Aleksandr Kovalenko", "Vladimir Repkin"],
+      "year": 2024,
+      "arxiv": "2401.14979",
+      "source_url": "https://arxiv.org/abs/2401.14979",
+      "pdf": "ms17-010-mal-2024.pdf"
+    },
+    {
+      "id": "meta-language-2018",
+      "title": "A Meta Language for Threat Modeling and Attack Simulations",
+      "authors": ["Pontus Johnson", "Robert Lagerström", "Mathias Ekstedt"],
+      "year": 2018,
+      "doi": "10.1145/3230833.3232799",
+      "source_url": "https://doi.org/10.1145/3230833.3232799",
+      "availability_note": "Author/publisher endpoints rejected automated download during this refresh."
+    },
+    {
+      "id": "countermeasures-2022",
+      "title": "Security Countermeasures Selection Using the Meta Attack Language and Probabilistic Attack Graphs",
+      "authors": ["Wojciech Wideł", "Preetam Mukherjee", "Mathias Ekstedt"],
+      "year": 2022,
+      "doi": "10.1109/ACCESS.2022.3200601",
+      "source_url": "https://doi.org/10.1109/ACCESS.2022.3200601",
+      "availability_note": "Open-access publisher/author endpoints rejected automated download during this refresh."
+    },
+    {
+      "id": "formal-description-2023",
+      "title": "The Meta Attack Language - A Formal Description",
+      "authors": ["Wojciech Wideł", "Simon Hacks", "Mathias Ekstedt", "Pontus Johnson", "Robert Lagerström"],
+      "year": 2023,
+      "doi": "10.1016/j.cose.2023.103284",
+      "source_url": "https://doi.org/10.1016/j.cose.2023.103284",
+      "pdf": "malformaldescription.pdf",
+      "extraction_mode": "raw_with_headings"
+    },
+    {
+      "id": "empirical-evaluation-2024",
+      "title": "Empirical Evaluation of a Threat Modeling Language as a Cybersecurity Assessment Tool",
+      "authors": ["Sotirios Katsikeas", "Engla Rencelj Ling", "Pontus Johnson", "Mathias Ekstedt"],
+      "year": 2024,
+      "doi": "10.1016/j.cose.2024.103743",
+      "source_url": "https://doi.org/10.1016/j.cose.2024.103743",
+      "pdf": "empirical_evaluation.pdf",
+      "extraction_mode": "raw_with_headings"
+    },
+    {
+      "id": "corelang-validation-2024",
+      "title": "Development and validation of coreLang: A threat modeling language for the ICT domain",
+      "authors": ["Sotirios Katsikeas", "Andrei Buhaiu", "Mathias Ekstedt", "Zeeshan Afzal", "Simon Hacks", "Preetam Mukherjee"],
+      "year": 2024,
+      "doi": "10.1016/j.cose.2024.104057",
+      "source_url": "https://doi.org/10.1016/j.cose.2024.104057",
+      "pdf": "corelang.pdf",
+      "extraction_mode": "raw_with_headings"
+    }
+  ]
+}
